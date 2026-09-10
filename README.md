@@ -4,15 +4,13 @@ STM32CubeIDE 환경에서 NUCLEO-F103RB 보드를 타겟으로 MCU가 제공하�
 
 
 
-[0. Install STM32CubeIDE( 개발환경설정)](./ex0_STM32CubeIDE/ex0_STM32CubeIDE.md) 
-
 [1. LED_Blink( GPIO 출력)](./doc/Blink/Blink.md) 
 
-[2. ToggleLED( GPIO 입력)](./doc/ToggleLED.md) 
+[2. UART2LED( UART에의한 LED제어)](./doc/UART2LED/UART2LED.md) 
 
-[3. printf(USART2를 이용한 printf( )구현)](./ex04_printf/ex04_printf.md) 
+[3. printf(USART2를 이용한 printf( )구현)](./doc/printf/printf.md) 
 
-[3. EXTI(GPIO 입력에 의한 인터럽트)](./ex03_EXTI/ex03_EXTI.md) 
+[4. printf_lib(printf() 사용자 라이브러리](./doc/printf_lib/printf_lib.md) 
 
 [5. ADC_Temp(Analog to Digital 컨버팅)](./ex05_ADC_Temp/ex05_ADC_Temp.md) 
 

@@ -2,9 +2,7 @@
 
 ### USART2를 이용한 printf()를 지원하는 사용자 라이브러리 작성
 
-**STM32CubeMX 6.18.1**에서 타겟 설정 및 **Peripheral** 설정 코드(**.ioc**)를 생성하여 이를 **STM32CubeIDE**에서 열어 원하는 기능을 구현하는 샘플 프로젝트 Sample을 만들어보자. **Peripheral** 설정은 **RCC**에서 클럭 소스 만 **HSI**로 설정 하고 나머지 **Peripheral** 설정은 기본값으로 설정할 경우 녹색 온보드 **LED**가 연결된 GPIO **PA5**가 출력으로 설정되고, **USART2**가 115200 BAUD / none parity / data 8bit / stop 1bit 로 설정된다. 이 기본설정만으로 구현가능한 시리얼 포트( UART2 ) 로 수신된 값에 따른 온보드 **LED** 제어를 구현해 보자.  
-
-`printf()`가 필요할 때 `printf.h`를 include하여 호출할 수 있도록 UART2를 이용한 `printf()`를 지원하는 `uart2_printf.h`와 `uart2_printf.c`를 작성하여, 테스트해보자.
+앞서 [USART2를 이용한 printf()구현](../printf/printf.md)`printf()`가 필요할 때 헤더파일을 include하여 호출할 수 있도록 UART2를 이용한 `printf()`를 지원하는 `uart2_printf.h`와 `uart2_printf.c`를 작성하여, 테스트해보자.
 
 ##### 개발 환경
 
