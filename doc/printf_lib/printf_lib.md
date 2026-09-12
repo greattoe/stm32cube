@@ -104,7 +104,102 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 ![](./img/![](./img/stm32cubeide_project_explore_build_project.png)
 
-다음은 **STM32CubeMX**에서 **Sample**프로젝트에 대해 자동 생성한 **main.c**의 내용이다.
+
+
+**STM32CubeIDE**의 **Project Explorer**에서 **printf_lib**프로젝트의 **Core**의 **Inc** 항목에 대고 마우스 오른쪽 버튼을 클릭하여 열린 컨텍스트 메뉴에서 **NEW** - **Header File**을 선택한다.
+
+![](./img/![](./img/stm32cubeide_project_explore_add_header2project1.png)
+
+
+
+다음 팝업 창의 **Header file:** 란에 `uart2_printf.h`를 입력하고 **[  <u>F</u>inish ]**버튼을 클릭한다.
+
+![](./img/<img src="./img/stm32cubeide_project_explore_add_header2project2.png" style="zoom:67%;" />
+
+다음과 같이 **`uart2_printf.h`**파일 작성 후, **Ctrl - S**로 저장한다.
+
+```c
+/*
+ * uart2_printf.h
+ *
+ * Created on: 2025. 03. 16 by Lee Yongjin
+ *
+ * STM32 HAL library for using printf with USART2
+ */
+
+#ifndef UART2_PRINTF_H
+#define UART2_PRINTF_H
+
+#include "stm32f1xx_hal.h"
+#include<stdio.h>
+#endif /* UART2_PRINTF_H */
+
+```
+
+
+
+**STM32CubeIDE**의 **Project Explorer**에서 **printf_lib**프로젝트의 **Core**의 **Src** 항목에 대고 마우스 오른쪽 버튼을 클릭하여 열린 컨텍스트 메뉴에서 **NEW** - **Source File**을 선택한다.
+
+![](./img/![](./img/stm32cubeide_project_explore_add_source2project1.png)
+
+
+
+다음 팝업 창의 **Source file:** 란에 `uart2_printf.c`를 입력하고 **[  <u>F</u>inish ]**버튼을 클릭한다.
+
+![](./img/<img src="./img/stm32cubeide_project_explore_add_source2project2.png" style="zoom:67%;" />
+
+다음과 같이 **`uart2_printf.c`**파일 작성 후, **Ctrl - S**로 저장한다.
+
+```c
+/*
+ * uart2_printf.c
+ *
+ * Created on: 2025. 03. 16 by Lee Yongjin
+ *
+ * STM32 HAL library for using printf with USART2
+ */
+
+#include "uart2_printf.h"
+
+extern UART_HandleTypeDef huart2;
+
+#ifdef __GNUC__
+/* With GCC, small printf (option LD Linker->Libraries->Small printf
+   set to 'Yes') calls __io_putchar() */
+#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
+#else
+#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
+#endif /* __GNUC__ */
+
+/**
+  * @brief  Retargets the C library printf function to the USART.
+  * @param  None
+  * @retval None
+  */
+PUTCHAR_PROTOTYPE
+{
+  /* Place your implementation of fputc here */
+  /* e.g. write a character to the USART1 and Loop until the end of transmission */
+  if (ch == '\n')
+    HAL_UART_Transmit (&huart2, (uint8_t*) "\r", 1, 0xFFFF);
+  HAL_UART_Transmit (&huart2, (uint8_t*) &ch, 1, 0xFFFF);
+
+  return ch;
+}
+
+```
+
+
+
+**<u>P</u>roject**메뉴의 **Build Project**항목을 클릭하여 프로젝트에 추가된 파일들의 무결성을 검사한다.
+
+
+
+![](./img/stm32cubeide_project_explore_build_project.png)
+
+
+
+다음은 **STM32CubeMX**에서 **printf_lib**프로젝트에 대해 자동 생성한 **main.c**의 내용이다.
 
 ```c
 /* USER CODE BEGIN Header */
@@ -362,81 +457,6 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 
 
-지금 구현하려는 기능은 UART2를 표준출력으로 사용하는 printf()를 사용할 수 있게 해주는 사용자 정의 라이브러리 uart2_printf를 구현하는 것이다.
-
-
-
-다음 `uart2.h`파일을 **printf_lib**프로젝트의 **Core**의 **Inc**에 추가한다.
-
-**uart2_printf.h**
-
-```c
-/*
- * uart2_printf.h
- *
- * Created on: 2025. 03. 16 by Lee Yongjin
- *
- * STM32 HAL library for using printf with USART2
- */
-
-#ifndef UART2_PRINTF_H
-#define UART2_PRINTF_H
-
-#include "stm32f1xx_hal.h"
-#include<stdio.h>
-#endif /* UART2_PRINTF_H */
-
-```
-
-다음 `uart2.c`파일을 **printf_lib**프로젝트의 **Core**의 **Src**에 추가한다.
-
-**uart2_printf.c**
-
-```c
-/*
- * uart2_printf.c
- *
- * Created on: 2025. 03. 16 by Lee Yongjin
- *
- * STM32 HAL library for using printf with USART2
- */
-
-#include "uart2_printf.h"
-
-extern UART_HandleTypeDef huart2;
-
-#ifdef __GNUC__
-/* With GCC, small printf (option LD Linker->Libraries->Small printf
-   set to 'Yes') calls __io_putchar() */
-#define PUTCHAR_PROTOTYPE int __io_putchar(int ch)
-#else
-#define PUTCHAR_PROTOTYPE int fputc(int ch, FILE *f)
-#endif /* __GNUC__ */
-
-/**
-  * @brief  Retargets the C library printf function to the USART.
-  * @param  None
-  * @retval None
-  */
-PUTCHAR_PROTOTYPE
-{
-  /* Place your implementation of fputc here */
-  /* e.g. write a character to the USART1 and Loop until the end of transmission */
-  if (ch == '\n')
-    HAL_UART_Transmit (&huart2, (uint8_t*) "\r", 1, 0xFFFF);
-  HAL_UART_Transmit (&huart2, (uint8_t*) &ch, 1, 0xFFFF);
-
-  return ch;
-}
-
-```
-
-
-
-
-
-
-
 
 
 `main.c`의 23~25행의 다음 코드를 찾는다.
@@ -460,14 +480,12 @@ PUTCHAR_PROTOTYPE
 
 
 
-
-
 `main.c`의 92~94행의 다음 코드를 찾는다.
 
 ```c
-/* USER CODE BEGIN Includes */
+/* USER CODE BEGIN 2 */
 
-/* USER CODE END Includes */
+  /* USER CODE END 2 */
 
 ```
 
@@ -477,7 +495,7 @@ PUTCHAR_PROTOTYPE
 
 ```c
 /* USER CODE BEGIN 2 */
-  printf("here is outside of Infinite loop~\n");
+  printf("here is outside of Infinite loop!\n");
   /* USER CODE END 2 */
 ```
 
@@ -502,6 +520,7 @@ PUTCHAR_PROTOTYPE
   while (1)
   {
 	  printf("here is inside of Infinite loop.\n");
+      HAL_Delay(500);
     /* USER CODE END WHILE */
 ```
 
@@ -515,10 +534,20 @@ PUTCHAR_PROTOTYPE
 
  <img src="./img/excution_window.png" style="zoom:67%;" />
 
-<img src="./img/win_key.png" style="zoom:50%;" /> + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc` <img src="./img\enter_key.png" style="zoom:25%;" /> 입력. 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
+![](./img/win_key.png) + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc`입력 후  [  확인  ]버튼을 클릭, 장치관리자를 열어,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
 
 ![](./img/check_port_num_on_device_manager.png)
 
 이제 적당한 시리얼 통신 에뮬레이터 프로그램( **[Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)**, **[Tera Term](https://teratermproject.github.io/index-en.html)** 등 )에서 포트 COM3을 Baudrate 115200 으로 열어  확인한다.
 
-![](./img/putty.png)[**목차**](../../README.md) 
+`printf()`함수로 출력한 문자열이 수신되는 것을 확인한다.
+
+![](./img/putty.png)
+
+
+
+
+
+
+
+[**목차**](../../README.md) 

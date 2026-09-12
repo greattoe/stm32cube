@@ -2,7 +2,7 @@
 
 ### 시리얼 (USART2) 수신 데이터에 의한 LED제어
 
-**STM32CubeMX 6.18.1**에서 타겟 설정 및 **Peripheral** 설정 코드(**.ioc**)를 생성하여 이를 **STM32CubeIDE**에서 열어 원하는 기능을 구현하는 샘플 프로젝트 Sample을 만들어보자. **Peripheral** 설정은 **RCC**에서 클럭 소스 만 **HSI**로 설정 하고 나머지 **Peripheral** 설정은 기본값으로 설정할 경우 녹색 온보드 **LED**가 연결된 GPIO **PA5**가 출력으로 설정되고, **USART2**가 115200 BAUD / none parity / data 8bit / stop 1bit 로 설정된다. 이 기본설정만으로 구현가능한 시리얼 포트( UART2 ) 로 수신된 값에 따른 온보드 **LED** 제어를 구현해 보자.  
+**USART2**가 115200 BAUD / none parity / data 8bit / stop 1bit 로 설정된다. 이 기본설정만으로 시리얼 포트( UART2 ) 로 수신된 값에 따른 온보드 **LED** 제어를 구현할 수 있다.  
 
 ##### 개발 환경
 
@@ -36,7 +36,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[  <u>Y</u>es  ]**를 클릭한다.
 
-![](./img/init_all_periperals_with_default.png)
+![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
 최우선으로 설정해야 하는 것은 **RCC** 설정이다. **Pinout & Configuration**탭에서 **System Core**를 선택 후,  **RCC**를 클릭하고 바로 우측의 RCC Mode and Configuration의 Mode에서 High Speed Clock(HSE)와 Low Speed Clock(LSE)를 모두 Disable로 설정한다. 이는 모든 외부 클럭을 Disable시킨 것으로 내부클럭(HSI)를 클럭 소스로 사용하겠다는 의미이다.
 
@@ -470,39 +470,21 @@ uint8_t ch = 0;
 
 **STM32CubeIDE**의 **Project** 메뉴의 **Build Project** 항목을 클릭하여 프로젝트를 빌드한다. 
 
+![](./img/![](./img/stm32cubeide_project_explore_build_project.png)
 
-
-빌드 결과는 **ST-Link**를 통해 타겟보드에 업로드 해야 하므로 그 전에  **ST-Link**의 펌웨어를 업그레이드 하기 위해 **<u>H</u>elp**메뉴의 **ST-Link Upgrade**항목을 클릭한다.
-
-![](./img\st_link_upgrade1.png)
-
-[ Open in update mode ] 버튼을 클릭한다.
-
-![](./img\st_link_upgrade2.png)
-
-[ Open in update mode ] 를 클릭 하면 Unknown으로  표시되던 Current Firmware Type 및 Version, Update to Firmware 정보가 표시된다. 이 때 [Upgrade] 버튼을 클릭한다.
-
-![](./img\st_link_upgrade3.png)
-
-업그레이드 진행상태가 표시된다.
-
-![](./img\st_link_upgrade4.png)
-
-
-
-업그레이드가 완료되면 Upgrade sucessful. 메세지가 나타난다.
-
-![](./img\st_link_upgrade5.png)
-
-새로운 **ST-Link** 펌웨어가 나오지 않는 한 더 이상의 업데이트는  필요 없다. 이제 앞서 빌드한 결과를 타겟보드에 올려 동작 시켜보자. **STM32CubeIDE**의 **<u>R</u>UN**메뉴의 **Run**항목을 클릭한다.
+이제 빌드한 결과를 타겟보드에 올려 동작 시켜보자. **STM32CubeIDE**의 **<u>R</u>UN**메뉴의 **Run**항목을 클릭한다.
 
 ![](./img/stm32cubeide_run_run.png)
 
+동작을 테스트해보려면 시리얼통신 에뮬레이터 프로그램으로 타겟보드가 연결된 시리얼포트를 열어, '1'이나 '0'을 전송해봐야 한다. 연결된 시리얼포트 번호는 장치관리자에서 볼 수 있다.
 
 
- <img src="./img/excution_window.png" style="zoom:67%;" />
 
-<img src="./img/win_key.png" style="zoom:50%;" /> + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc` <img src="./img\enter_key.png" style="zoom:25%;" /> 입력. 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
+ ![](./img/win_key.png) + `R` 을 입력하여 실행 창을 열고, 
+
+<img src="./img/excution_window.png" style="zoom:67%;" />
+
+ 열린 실행 창에 `devmgmt.msc` ![](./img\enter_key.png) 입력. 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
 
 ![](./img/check_port_num_on_device_manager.png)
 

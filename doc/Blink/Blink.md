@@ -34,7 +34,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 
 
-![](./img/init_all_periperals_with_default.png)
+![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
 위 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창에서 **[  <u>Y</u>es  ]**를 클릭하면
 
@@ -92,7 +92,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 <img src="./img/stm32cubemx_code_generation_success.png" style="zoom:67%;" />
 
-위 The Code is successfully generated... 팝업 메세지 창에서 **[ Open Project]** 를 클릭하면 Project Manager에서 Toolchain / IDE로 지정한 **STM32CubeIDE**가 자동 실행되며 다음 팝업과 함께 Project Explore에 해당 프로젝트가 로딩된다.
+위 The Code is successfully generated... 팝업 메세지 창에서 **[ Open Project]** 를 클릭하면 Project Manager에서 Toolchain / IDE로 지정한 **STM32CubeIDE**가 자동 실행되며 해당 프로젝트가 **STM32CubeIDE**의 워크스페이스에 성공적으로 Import되었다는 팝업과 함께 Project Explore에 해당 프로젝트가 열린다.
 
 <img src="./img/stm32cubeide_import_project_complete.png" style="zoom:80%;" />
 
@@ -100,7 +100,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-**Project Explorer**에서 **Sample** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
+**Project Explorer**에서 **Blink** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
 
 ![](./img/stm32cubeide_project_explorer_project_main.png)
 
@@ -311,20 +311,24 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin : PC13 */
-  GPIO_InitStruct.Pin = GPIO_PIN_13;
-  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-  GPIO_InitStruct.Pull = GPIO_PULLUP;
-  HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
+  /*Configure GPIO pin : B1_Pin */
+  GPIO_InitStruct.Pin = B1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : PA5 */
-  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  /*Configure GPIO pin : LD2_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
+  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
@@ -366,30 +370,10 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
+
 ```
 
-지금 구현하려는 기능은 **NUCLEO-F103RB**타겟보드와 PC를 USB 케이블로 연결하고 PC에서 실행한 시리얼 통신 에뮬레이터 프로그램(TERATERM, Putty 등)을 통해 '1'을 수신하면 온보드 LED를 켜고, '0'을 수신하면 온보드 LED를 끄는 것이다. 이를 위해 필요한 HAL(Hardware Abstract Layer:하드웨어 추상화 계층) 라이브러리는 **USART**로부터 임의의 크기의 문자열을 수신하는 **`HAL_UART_Receive()`**와 임의의 **GPIO Pin**으로 신호를 출력하는 **`HAL_GPIO_WritePin()`** 2가지이다.
-
-**`HAL_UART_Receive()`**함수원형은 아래와 같다.
-
-```c
-HAL_StatusTypeDef HAL_UART_Receive(
-    UART_HandleTypeDef *huart,
-    uint8_t *pData,
-    uint16_t Size,
-    uint32_t Timeout
-);
-```
-
-**`HAL_UART_Receive()`**함수의 매개변수와 의미는 다음과 같다.
-
-
-| 매개변수  | 의미                               |
-| --------- | ---------------------------------- |
-| `huart`   | 사용할 UART의 핸들 주소            |
-| `pData`   | 수신한 데이터를 저장할 버퍼의 주소 |
-| `Size`    | 수신할 데이터의 개수(byte)         |
-| `Timeout` | 수신을 기다릴 최대 시간(ms)        |
+지금 구현하려는 기능은 **NUCLEO-F103RB**보드의 온 보드 **LED**를 0.5초동안 점등 후, 0.5초동안 소등을 무한 반복하는 **LED Blink**이다. 이를 위해 필요한 HAL(Hardware Abstract Layer:하드웨어 추상화 계층) 라이브러리는 임의의 **GPIO Pin**으로 신호를 출력하는 **`HAL_GPIO_WritePin()`** 과 msec단위의 시간 지연 함수 **`HAL_Delay()`** 2가지이다.
 
 
 
@@ -413,28 +397,21 @@ void HAL_GPIO_WritePin(
 
 
 
-`main.c`의 44~46행의 다음 코드를 찾는다.
+**`HAL_GPIO_WritePin()`**함수원형은 아래와 같다.
 
 ```c
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-
+void HAL_Delay(uint32_t Delay);
 ```
 
+**`HAL_Delay()`**함수의 매개변수와 의미는 다음과 같다.
 
-
-위코드를 다음과 같이 수정 편집 후 저장한다.
-
-```c
-/* USER CODE BEGIN PV */
-uint8_t ch = 0;
-/* USER CODE END PV */
-```
+| 매개변수   | 의미                                |
+| ---------- | ----------------------------------- |
+| `Delay`    | 지연할 시간. 단위는 **ms(밀리초)**  |
 
 
 
-`main.c`의 98~101행의 다음 코드를 찾는다.
+`main.c`의 97~100행의 다음 코드를 찾는다.
 
 ```c
 /* USER CODE BEGIN WHILE */
@@ -452,16 +429,10 @@ uint8_t ch = 0;
 /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_UART_Receive(&huart2, &ch, sizeof(ch), 10);
-	  if(ch == '1')
-	  {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
-	  }
-	  else if(ch == '0')
-	  {
-		  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
-	  }
-	  else;
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
+	  HAL_Delay(500);
+	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
+	  HAL_Delay(500);
     /* USER CODE END WHILE */
 ```
 
@@ -469,9 +440,11 @@ uint8_t ch = 0;
 
 **STM32CubeIDE**의 **Project** 메뉴의 **Build Project** 항목을 클릭하여 프로젝트를 빌드한다. 
 
+![](./img/![](./img/stm32cubeide_project_explore_build_project.png)
 
 
-빌드 결과는 **ST-Link**를 통해 타겟보드에 업로드 해야 하므로 그 전에  **ST-Link**의 펌웨어를 업그레이드 하기 위해 **<u>H</u>elp**메뉴의 **ST-Link Upgrade**항목을 클릭한다.
+
+빌드 결과는 **ST-Link**를 통해 타겟보드에 업로드 해야 하므로 그 전에  **ST-Link**의 펌웨어를 업그레이드 하기 위해 **<u>H</u>elp**메뉴의 **ST-Link Upgrade**항목을 클릭한다.( 이 작업은 새 펌웨어가 나오지 않는 한 1회만 수행하면 된다. )
 
 ![](./img\st_link_upgrade1.png)
 
@@ -495,9 +468,7 @@ uint8_t ch = 0;
 
 새로운 **ST-Link** 펌웨어가 나오지 않는 한 더 이상의 업데이트는  필요 없다. 이제 앞서 빌드한 결과를 타겟보드에 올려 동작 시켜보자. **STM32CubeIDE**의 **<u>R</u>UN**메뉴의 **Run**항목을 클릭한다.
 
-![](./img/stm32cubeide_run_run.png)
-
-
+![](./img/stm32cubeide_project_explorer_run_run.png)
 
 이제 **NUCLEO-F103RB** 타겟보드의 검은색 리셋 스위치 아래 녹색 LED(LED2)가 0.5초동안 켜졌다, 다시 0.5초동안 꺼졌다를 반복하는 것을 확인한다.
 

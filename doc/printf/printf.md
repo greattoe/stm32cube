@@ -36,7 +36,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[  <u>Y</u>es  ]**를 클릭한다.
 
-![](./img/init_all_periperals_with_default.png)
+![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
 최우선으로 설정해야 하는 것은 **RCC** 설정이다. **Pinout & Configuration**탭에서 **System Core**를 선택 후,  **RCC**를 클릭하고 바로 우측의 RCC Mode and Configuration의 Mode에서 High Speed Clock(HSE)와 Low Speed Clock(LSE)를 모두 Disable로 설정한다. 이는 모든 외부 클럭을 Disable시킨 것으로 내부클럭(HSI)를 클럭 소스로 사용하겠다는 의미이다.
 
@@ -451,6 +451,8 @@ PUTCHAR_PROTOTYPE
 
 
 **STM32CubeIDE**의 **Project** 메뉴의 **Build Project** 항목을 클릭하여 프로젝트를 빌드한다. 
+
+![](./img/stm32cubeide_project_explore_build_project.png)
 
 
 
