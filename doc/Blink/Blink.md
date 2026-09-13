@@ -4,7 +4,7 @@
 
 **STM32CubeMX**와 **STM32CubeIDE**를 이용하여  **NUCLEO-F103RB**보드의 온 보드 **LED**를 0.5초동안 점등 후, 0.5초동안 소등을 무한 반복하는 **LED Blink**를 구현해 보자.  
 
-##### 개발 환경
+#### 개발 환경
 
 **OS:** MS Windows11
 
