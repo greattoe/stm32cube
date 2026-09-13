@@ -2,15 +2,15 @@
 
 ### USART2를 이용한 printf() 구현
 
-**printf()**함수는 표준 출력장치(화면)으로 문자열을 출력하는 함수이다. embeded system에는 표준 출력장치(화면)가 없지만, 한문자를 USART로 전송하는 함수를 만들고 이 함수를 표준출력장치로 등록하면 `printf()`를 사용할 수 있다. **NUCLEO-F103RB** 타겟보드에는 3개의 USART(USART1, USART2, USART3)가 지원된다. 그 중 USB 포트에 바로 연결된 장치가 USART2이므로 USART2를 통해 한 문자를 전송하는 함수를 만들고, 이를 표준출력장치로 등록하여 `printf()`함수를 구현해보자.
+`printf()`함수는 표준 출력장치(화면)으로 문자열을 출력하는 함수이다. embeded system에는 표준 출력장치(화면)가 없지만, 한문자를 USART로 전송하는 함수를 만들고 이 함수를 표준출력장치로 등록하면 `printf()`를 사용할 수 있다. **NUCLEO-F103RB** 타겟보드에는 3개의 USART(USART1, USART2, USART3)가 지원된다. 그 중 USB 포트에 바로 연결된 장치가 USART2이므로 USART2를 통해 한 문자를 전송하는 함수를 만들고, 이를 표준출력장치로 등록하여 `printf()`함수를 구현해보자.
 
 ##### 개발 환경
 
-**OS: ** MS Windows11
+**OS** MS Windows11
 
-**타겟보드: ** NUCLEO-F103RB
+**타겟보드** NUCLEO-F103RB
 
-**Development SW Tools: ** [STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html) / [STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)
+**Development SW Tools** [STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html) / [STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)
 
 ---
 
