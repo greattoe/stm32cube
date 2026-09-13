@@ -94,7 +94,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-**Project Explorer**에서 **Sample** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
+**Project Explorer**에서 **printf_lib** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
 
 ![](./img/stm32cubeide_project_explorer_project_main.png)
 
@@ -191,7 +191,7 @@ PUTCHAR_PROTOTYPE
 
 
 
-**<u>P</u>roject**메뉴의 **Build Project**항목을 클릭하여 프로젝트에 추가된 파일들의 무결성을 검사한다.
+**<u>P</u>roject**메뉴의 **Build Project**항목을 클릭하여 프로젝트에 추가된 파일들(`uart2_printf.h`, `uart2_printf.c`)의 무결성을 검사한다.
 
 
 
@@ -532,9 +532,11 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 
 
+![](./img/win_key.png) + `R` 을 입력하여실행 창을 연다.
+
  <img src="./img/excution_window.png" style="zoom:67%;" />
 
-![](./img/win_key.png) + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc`입력 후  [  확인  ]버튼을 클릭, 장치관리자를 열어,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
+실행 창에 `devmgmt.msc`입력 후  [  확인  ]버튼을 클릭, 장치관리자를 열어,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
 
 ![](./img/check_port_num_on_device_manager.png)
 

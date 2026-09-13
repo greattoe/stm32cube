@@ -6,9 +6,9 @@
 
 ##### 개발 환경
 
-**OS: ** **MS Windows11**
+**OS: **  **MS Windows11**
 
-**타겟보드: ** **NUCLEO-F103RB**
+**타겟보드: **  **NUCLEO-F103RB**
 
 **SW Tools: ** **[STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html)** / **[STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)**
 
@@ -36,11 +36,11 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 ![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
-위 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창에서 **[  <u>Y</u>es  ]**를 클릭하면
+위 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창에서 	**[ Yes ]**를 클릭하면
 
 **GPIO** **PA5**는 Output Push pull로,  **PC13**은 External Interrupt Mode with Rising edge trigger detection으로 설정되고
 
-**USART2**는 **Baudrate**115200,  **Parity** none, **Data** 8bit, **Stop** 1bit가 **default**(기본값)으로 설정된다.
+**USART2**는 **Baudrate**115200,  **Parity** none, **Data** 8bit, **Stop** 1bit가 **default**(기본값)로 설정된다.
 
 
 
@@ -54,11 +54,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ <u>Y</u>es ]**를 클릭한 경우의 **GPIO** 설정상태이다.
+다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **GPIO** 설정상태이다.
 
 ![](./img/stm32cubemx_gpio_default_config.png)
 
-다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ <u>Y</u>es ]**를 클릭한 경우의 **USART2** 설정상태이다.
+다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **USART2** 설정상태이다.
 
 ![](./img/stm32cubemx_usart2_default_config.png)
 
@@ -84,7 +84,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 **2. Project Name** :프로젝트 이름을 영문, 숫자 조합으로 작성(한글×)한다.
 
-**3. Toolchain / IDE** : STM32CubeIDE를 선택한다.( **<u>매우 중요함.</u>** 잘못 지정되어 있을 경우 **STM32CubeIDE**에서 프로젝트가 열리지 않는다. )
+**3. Toolchain / IDE** : STM32CubeIDE를 선택한다.( **매우 중요함.** 잘못 지정되어 있을 경우 **STM32CubeIDE**에서 프로젝트가 열리지 않는다. )
 
 **4. GENERATE CODE**를 클릭한다.
 
@@ -92,7 +92,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 <img src="./img/stm32cubemx_code_generation_success.png" style="zoom:67%;" />
 
-위 The Code is successfully generated... 팝업 메세지 창에서 **[ Open Project]** 를 클릭하면 Project Manager에서 Toolchain / IDE로 지정한 **STM32CubeIDE**가 자동 실행되며 해당 프로젝트가 **STM32CubeIDE**의 워크스페이스에 성공적으로 Import되었다는 팝업과 함께 Project Explore에 해당 프로젝트가 열린다.
+위 The Code is successfully generated... 팝업 메세지 창에서 **[ Open Project ]** 를 클릭하면 Project Manager에서 Toolchain / IDE로 지정한 **STM32CubeIDE**가 자동 실행되며 해당 프로젝트가 **STM32CubeIDE**의 워크스페이스에 성공적으로 Import되었다는 팝업과 함께 Project Explore에 해당 프로젝트가 열린다.
 
 <img src="./img/stm32cubeide_import_project_complete.png" style="zoom:80%;" />
 
@@ -466,7 +466,7 @@ void HAL_Delay(uint32_t Delay);
 
 ![](./img\st_link_upgrade5.png)
 
-새로운 **ST-Link** 펌웨어가 나오지 않는 한 더 이상의 업데이트는  필요 없다. 이제 앞서 빌드한 결과를 타겟보드에 올려 동작 시켜보자. **STM32CubeIDE**의 **<u>R</u>UN**메뉴의 **Run**항목을 클릭한다.
+새로운 **ST-Link** 펌웨어가 나오지 않는 한 더 이상의 업데이트는  필요 없다. 이제 앞서 빌드한 결과를 타겟보드에 올려 동작 시켜보자. **STM32CubeIDE**의 **Run**메뉴의 **Run**항목을 클릭한다.
 
 ![](./img/stm32cubeide_project_explorer_run_run.png)
 

@@ -34,7 +34,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 
 
-모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[  <u>Y</u>es  ]**를 클릭한다.
+모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[ Yes ]**를 클릭한다.
 
 ![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
@@ -48,11 +48,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ <u>Y</u>es ]**를 클릭한 경우의 **GPIO** 설정상태이다.
+다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **GPIO** 설정상태이다.
 
 ![](./img/stm32cubemx_gpio_default_config.png)
 
-다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ <u>Y</u>es ]**를 클릭한 경우의 **USART2** 설정상태이다.
+다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **USART2** 설정상태이다.
 
 ![](./img/stm32cubemx_usart2_default_config.png)
 
@@ -78,7 +78,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 **2. Project Name** :프로젝트 이름을 영문, 숫자 조합으로 작성(한글×)한다.
 
-**3. Toolchain / IDE** : STM32CubeIDE를 선택한다.( **<u>매우 중요함.</u>** 잘못 지정되어 있을 경우 **STM32CubeIDE**에서 프로젝트가 열리지 않는다. )
+**3. Toolchain / IDE** : STM32CubeIDE를 선택한다.( **매우 중요함.** 잘못 지정되어 있을 경우 **STM32CubeIDE**에서 프로젝트가 열리지 않는다. )
 
 **4. GENERATE CODE**를 클릭한다.
 
@@ -94,7 +94,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-**Project Explorer**에서 **Sample** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
+**Project Explorer**에서 **printf** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
 
 ![](./img/stm32cubeide_project_explorer_project_main.png)
 
@@ -456,7 +456,7 @@ PUTCHAR_PROTOTYPE
 
 
 
-빌드 결과는 **ST-Link**를 통해 타겟보드에 업로드 하여 동작 시켜보자. **STM32CubeIDE**의 **<u>R</u>UN**메뉴의 **Run**항목을 클릭한다.
+빌드 결과는 **ST-Link**를 통해 타겟보드에 업로드 하여 동작 시켜보자. **STM32CubeIDE**의 **Run**메뉴의 **Run**항목을 클릭한다.
 
 ![](./img/stm32cubeide_run_run.png)
 
