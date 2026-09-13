@@ -367,9 +367,9 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 ```
 
-지금 구현하려는 기능은 **NUCLEO-F103RB**타겟보드와 PC를 USB 케이블로 연결하고 PC에서 실행한 시리얼 통신 에뮬레이터 프로그램(TERATERM, Putty 등)을 통해 '1'을 수신하면 온보드 LED를 켜고, '0'을 수신하면 온보드 LED를 끄는 것이다. 이를 위해 필요한 HAL(Hardware Abstract Layer:하드웨어 추상화 계층) 라이브러리는 **USART**로부터 임의의 크기의 문자열을 수신하는 **`HAL_UART_Receive()`**와 임의의 **GPIO Pin**으로 신호를 출력하는 **`HAL_GPIO_WritePin()`** 2가지이다.
+지금 구현하려는 기능은 **NUCLEO-F103RB**타겟보드와 PC를 USB 케이블로 연결하고 PC에서 실행한 시리얼 통신 에뮬레이터 프로그램(TERATERM, Putty 등)을 통해 '1'을 수신하면 온보드 LED를 켜고, '0'을 수신하면 온보드 LED를 끄는 것이다. 이를 위해 필요한 HAL(Hardware Abstract Layer:하드웨어 추상화 계층) 라이브러리는 **USART**로부터 임의의 크기의 문자열을 수신하는 `HAL_UART_Receive()`와 임의의 **GPIO Pin**으로 신호를 출력하는 `HAL_GPIO_WritePin()` 2가지이다.
 
-**`HAL_UART_Receive()`**함수원형은 아래와 같다.
+`HAL_UART_Receive()`함수원형은 아래와 같다.
 
 ```c
 HAL_StatusTypeDef HAL_UART_Receive(
@@ -380,7 +380,7 @@ HAL_StatusTypeDef HAL_UART_Receive(
 );
 ```
 
-**`HAL_UART_Receive()`**함수의 매개변수와 의미는 다음과 같다.
+`HAL_UART_Receive()`함수의 매개변수와 의미는 다음과 같다.
 
 
 | 매개변수  | 의미                               |
@@ -392,7 +392,7 @@ HAL_StatusTypeDef HAL_UART_Receive(
 
 
 
-**`HAL_GPIO_WritePin()`**함수원형은 아래와 같다.
+`HAL_GPIO_WritePin()`함수원형은 아래와 같다.
 
 ```c
 void HAL_GPIO_WritePin(
@@ -404,7 +404,7 @@ void HAL_GPIO_WritePin(
 
 
 
-**`HAL_GPIO_WritePin()`**함수의 매개변수와 의미는 다음과 같다.
+`HAL_GPIO_WritePin()`함수의 매개변수와 의미는 다음과 같다.
 
 | 매개변수   | 의미                                |
 | ---------- | ----------------------------------- |
