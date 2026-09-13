@@ -387,7 +387,7 @@ void HAL_GPIO_WritePin(
 );
 ```
 
-**`HAL_GPIO_WritePin()`**함수의 매개변수와 의미는 다음과 같다.
+`HAL_GPIO_WritePin()`함수의 매개변수와 의미는 다음과 같다.
 
 | 매개변수   | 의미                                |
 | ---------- | ----------------------------------- |
@@ -397,7 +397,7 @@ void HAL_GPIO_WritePin(
 
 
 
-**`HAL_GPIO_WritePin()`**함수원형은 아래와 같다.
+`HAL_Delay()`함수원형은 아래와 같다.
 
 ```c
 void HAL_Delay(uint32_t Delay);
