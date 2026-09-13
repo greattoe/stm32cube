@@ -373,11 +373,11 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 ```
 
-지금 구현하려는 기능은 **NUCLEO-F103RB**보드의 온 보드 **LED**를 0.5초동안 점등 후, 0.5초동안 소등을 무한 반복하는 **LED Blink**이다. 이를 위해 필요한 HAL(Hardware Abstract Layer:하드웨어 추상화 계층) 라이브러리는 임의의 **GPIO Pin**으로 신호를 출력하는 **`HAL_GPIO_WritePin()`** 과 msec단위의 시간 지연 함수 **`HAL_Delay()`** 2가지이다.
+지금 구현하려는 기능은 **NUCLEO-F103RB**보드의 온 보드 **LED**를 0.5초동안 점등 후, 0.5초동안 소등을 무한 반복하는 **LED Blink**이다. 이를 위해 필요한 HAL(Hardware Abstract Layer:하드웨어 추상화 계층) 라이브러리는 임의의 **GPIO Pin**으로 신호를 출력하는 `HAL_GPIO_WritePin()` 과 msec단위의 시간 지연 함수 `HAL_Delay()` 2가지이다.
 
 
 
-**`HAL_GPIO_WritePin()`**함수원형은 아래와 같다.
+`HAL_GPIO_WritePin()`함수원형은 아래와 같다.
 
 ```c
 void HAL_GPIO_WritePin(
