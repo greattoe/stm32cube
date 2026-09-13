@@ -2,21 +2,21 @@
 
 ### USART2를 이용한 printf()를 지원하는 사용자 라이브러리 작성
 
-앞서 [USART2를 이용한 printf()구현](../printf/printf.md)`printf()`가 필요할 때 헤더파일을 include하여 호출할 수 있도록 UART2를 이용한 `printf()`를 지원하는 `uart2_printf.h`와 `uart2_printf.c`를 작성하여, 테스트해보자.
+앞서 [USART2를 이용한 printf()구현](../printf/printf.md)에서 USART2를 이용하여 `printf()`를 구현한 방법을 `printf()`가 필요할 때 헤더파일을 include하여 호출할 수 있도록 UART2를 이용한 `printf()`를 지원하는사용자 정의 라이브러리 `uart2_printf.h`와 `uart2_printf.c`를 작성하여, 테스트해보자.
 
 ##### 개발 환경
 
-**OS: ** **MS Windows11**
+**OS:** MS Windows11
 
-**타겟보드: ** **NUCLEO-F103RB**
+**타겟보드:** NUCLEO-F103RB
 
-**Development SW Tools: ** **[STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html)** / **[STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)**
+**Development SW Tools:** [STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html) / [STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)
 
 ---
 
 **CubeMX에서 설정할 Peripheral**
 
-​	**RCC **의  클럭 소스만 설정 하고 나머지 **Peripheral**은 기본값으로 설정(따로 설정하지 않는다.) 
+​	**RCC**의  클럭 소스만 설정 하고 나머지 **Peripheral**은 기본값으로 설정(따로 설정하지 않는다.) 
 
 새로운 STM32 프로젝트 생성을 위해 STM32CubeMX 실행 후, 타겟 설정을 위해 **ACCESS TO BOARD SELECTOR**를 클릭한다.
 
@@ -34,9 +34,11 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 
 
-모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[  <u>Y</u>es  ]**를 클릭한다.
+모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 [  Yes  ]를 클릭한다.
 
-![](./img/init_all_periperals_with_default.png)
+![](./img/stm32cubuemx_init_all_periperals_with_default.png)
+
+
 
 최우선으로 설정해야 하는 것은 **RCC** 설정이다. **Pinout & Configuration**탭에서 **System Core**를 선택 후,  **RCC**를 클릭하고 바로 우측의 RCC Mode and Configuration의 Mode에서 High Speed Clock(HSE)와 Low Speed Clock(LSE)를 모두 Disable로 설정한다. 이는 모든 외부 클럭을 Disable시킨 것으로 내부클럭(HSI)를 클럭 소스로 사용하겠다는 의미이다.
 
@@ -48,11 +50,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ <u>Y</u>es ]**를 클릭한 경우의 **GPIO** 설정상태이다.
+다음은 [ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **GPIO** 설정상태이다.
 
 ![](./img/stm32cubemx_gpio_default_config.png)
 
-다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ <u>Y</u>es ]**를 클릭한 경우의 **USART2** 설정상태이다.
+다음 역시 [ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **USART2** 설정상태이다.
 
 ![](./img/stm32cubemx_usart2_default_config.png)
 
@@ -78,7 +80,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 **2. Project Name** :프로젝트 이름을 영문, 숫자 조합으로 작성(한글×)한다. 이 프로젝트 명은 **printf_lib** 로 하자.
 
-**3. Toolchain / IDE** : STM32CubeIDE를 선택한다.( **<u>매우 중요함.</u>** 잘못 지정되어 있을 경우 **STM32CubeIDE**에서 프로젝트가 열리지 않는다. )
+**3. Toolchain / IDE** : STM32CubeIDE를 선택한다.( **매우 중요함.** 잘못 지정되어 있을 경우 **STM32CubeIDE**에서 프로젝트가 열리지 않는다. )
 
 **4. GENERATE CODE**를 클릭한다.
 
@@ -100,7 +102,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-**STM32CubeIDE** 의 **<u>P</u>roject**메뉴의 **Build Project**항목을 클릭하여 테스트 빌드를 수행한다.
+**STM32CubeIDE** 의 **Project**메뉴의 **Build Project**항목을 클릭하여 테스트 빌드를 수행한다.
 
 ![](./img/![](./img/stm32cubeide_project_explore_build_project.png)
 
@@ -112,7 +114,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음 팝업 창의 **Header file:** 란에 `uart2_printf.h`를 입력하고 **[  <u>F</u>inish ]**버튼을 클릭한다.
+다음 팝업 창의 **Header file:** 란에 `uart2_printf.h`를 입력하고 [  Finish ]버튼을 클릭한다.
 
 ![](./img/<img src="./img/stm32cubeide_project_explore_add_header2project2.png" style="zoom:67%;" />
 
@@ -144,7 +146,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음 팝업 창의 **Source file:** 란에 `uart2_printf.c`를 입력하고 **[  <u>F</u>inish ]**버튼을 클릭한다.
+다음 팝업 창의 **Source file:** 란에 `uart2_printf.c`를 입력하고 [  Finish ]버튼을 클릭한다.
 
 ![](./img/<img src="./img/stm32cubeide_project_explore_add_source2project2.png" style="zoom:67%;" />
 
@@ -536,7 +538,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 
  <img src="./img/excution_window.png" style="zoom:67%;" />
 
-실행 창에 `devmgmt.msc`입력 후  [  확인  ]버튼을 클릭, 장치관리자를 열어,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
+실행 창에 `devmgmt.msc`입력 후  [  확인  ]버튼을 클릭하여, 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
 
 ![](./img/check_port_num_on_device_manager.png)
 
