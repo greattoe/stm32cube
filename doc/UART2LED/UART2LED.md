@@ -34,7 +34,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 
 
-모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[ Yes ]**를 클릭한다.
+모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[Yes]**를 클릭한다.
 
 ![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
@@ -48,11 +48,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **GPIO** 설정상태이다.
+다음은 **Initialize all peripheral with their default Mode?**팝업 창에서 **[Yes]**를 클릭한 경우의 **GPIO** 설정상태이다.
 
 ![](./img/stm32cubemx_gpio_default_config.png)
 
-다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **USART2** 설정상태이다.
+다음 역시 **Initialize all peripheral with their default Mode?**팝업 창에서 **[Yes]**를 클릭한 경우의 **USART2** 설정상태이다.
 
 ![](./img/stm32cubemx_usart2_default_config.png)
 
