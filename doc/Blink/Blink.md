@@ -36,7 +36,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 ![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
-위 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창에서 	**[Yes]**를 클릭하면
+위 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창에서 	[ Yes ]를 클릭하면
 
 **GPIO** **PA5**는 Output Push pull로,  **PC13**은 External Interrupt Mode with Rising edge trigger detection으로 설정되고
 
