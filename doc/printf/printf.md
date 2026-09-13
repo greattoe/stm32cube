@@ -2,21 +2,21 @@
 
 ### USART2를 이용한 printf() 구현
 
-**printf()**함수는 표준 출력장치(화면)으로 문자열을 출력하는 함수이다. embeded system에는 표준 출력장치(화면)가 없지만, 한문자를 USART로 전송하는 함수를 만들고 이 함수를 표준출력장치로 등록하면 **printf()**를 사용할 수 있다. **NUCLEO-F103RB** 타겟보드에는 3개의 USART(USART1, USART2, USART3)가 지원된다. 그 중 USB 포트에 바로 연결된 장치가 USART2이므로 USART2를 통해 한 문자를 전송하는 함수를 만들고, 이를 표준출력장치로 등록하여 **printf()**함수를 구현해보자.
+**printf()**함수는 표준 출력장치(화면)으로 문자열을 출력하는 함수이다. embeded system에는 표준 출력장치(화면)가 없지만, 한문자를 USART로 전송하는 함수를 만들고 이 함수를 표준출력장치로 등록하면 `printf()`를 사용할 수 있다. **NUCLEO-F103RB** 타겟보드에는 3개의 USART(USART1, USART2, USART3)가 지원된다. 그 중 USB 포트에 바로 연결된 장치가 USART2이므로 USART2를 통해 한 문자를 전송하는 함수를 만들고, 이를 표준출력장치로 등록하여 `printf()`함수를 구현해보자.
 
 ##### 개발 환경
 
-**OS: ** **MS Windows11**
+**OS: ** MS Windows11
 
-**타겟보드: ** **NUCLEO-F103RB**
+**타겟보드: ** NUCLEO-F103RB
 
-**Development SW Tools: ** **[STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html)** / **[STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)**
+**Development SW Tools: ** [STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html) / [STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)
 
 ---
 
 **CubeMX에서 설정할 Peripheral**
 
-​	**RCC **의  클럭 소스만 설정 하고 나머지 **Peripheral**은 기본값으로 설정(따로 설정하지 않는다.) 
+​	**RCC**의  클럭 소스만 설정 하고 나머지 **Peripheral**은 기본값으로 설정(따로 설정하지 않는다.) 
 
 새로운 STM32 프로젝트 생성을 위해 STM32CubeMX 실행 후, 타겟 설정을 위해 **ACCESS TO BOARD SELECTOR**를 클릭한다.
 
@@ -34,7 +34,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 
 
-모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 **[ Yes ]**를 클릭한다.
+모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창이 나타나면 [ Yes ]를 클릭한다.
 
 ![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
@@ -48,11 +48,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **GPIO** 설정상태이다.
+다음은 [ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **GPIO** 설정상태이다.
 
 ![](./img/stm32cubemx_gpio_default_config.png)
 
-다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **USART2** 설정상태이다.
+다음 역시[ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **USART2** 설정상태이다.
 
 ![](./img/stm32cubemx_usart2_default_config.png)
 
@@ -460,15 +460,15 @@ PUTCHAR_PROTOTYPE
 
 ![](./img/stm32cubeide_run_run.png)
 
-시리얼 통신 에뮬레이터를 통해 printf()로 출력한 문자열이 시리얼 통신으로 수신되는지 확인해보자. 우선 타겟보드가 연결된 포트번호를 확인해야 한다.
+시리얼 통신 에뮬레이터를 통해 `printf()`로 출력한 문자열이 시리얼 통신으로 수신되는지 확인해보자. 우선 타겟보드가 연결된 포트번호를 확인해야 한다.
 
  <img src="./img/excution_window.png" style="zoom:67%;" />
 
-<img src="./img/win_key.png" style="zoom:50%;" /> + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc` <img src="./img\enter_key.png" style="zoom:25%;" /> 입력. 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
+<img src="./img/win_key.png" style="zoom:50%;" /> + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc`  입력 후, [ 확인 ] 버튼을 클릭하여 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
 
 ![](./img/check_port_num_on_device_manager.png)
 
-이제 적당한 시리얼 통신 에뮬레이터 프로그램( **[Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)**, **[Tera Term](https://teratermproject.github.io/index-en.html)** 등 )에서 포트 COM3을 Baudrate 115200 으로 열어 printf()함수로 출력한 문자열이 수신되는 것을 확인한다.
+이제 적당한 시리얼 통신 에뮬레이터 프로그램( **[Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)**, **[Tera Term](https://teratermproject.github.io/index-en.html)** 등 )에서 포트 COM3을 Baudrate 115200 으로 열어 `printf()`함수로 출력한 문자열이 수신되는 것을 확인한다.
 
 ![](./img/putty.png)
 
