@@ -16,7 +16,7 @@
 
 **CubeMX에서 설정할 Peripheral**
 
-​	**RCC **의  클럭 소스만 설정 하고 나머지 **Peripheral**은 기본값으로 설정(따로 설정하지 않는다. ) 
+​	**RCC**의  클럭 소스만 설정 하고 나머지 **Peripheral**은 기본값으로 설정(따로 설정하지 않는다. ) 
 
 새로운 STM32 프로젝트 생성을 위해 STM32CubeMX 실행 후, 타겟 설정을 위해 **ACCESS TO BOARD SELECTOR**를 클릭한다.
 
@@ -36,7 +36,7 @@ New Project fron Board 화면의 **PRODUCT INFO**를 스크롤다운해서 **MCU
 
 ![](./img/stm32cubemx_init_all_periperals_with_default.png)
 
-위 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창에서 	**[ Yes ]**를 클릭하면
+위 모든 주변장치들을 기본 모드로 초기화 하겠냐는 팝업창에서 	**[Yes]**를 클릭하면
 
 **GPIO** **PA5**는 Output Push pull로,  **PC13**은 External Interrupt Mode with Rising edge trigger detection으로 설정되고
 
@@ -54,11 +54,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-다음은 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **GPIO** 설정상태이다.
+다음은 [ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **GPIO** 설정상태이다.
 
 ![](./img/stm32cubemx_gpio_default_config.png)
 
-다음 역시 **Initialize all peripheral with their default Mode ?**팝업 창에서 **[ Yes ]**를 클릭한 경우의 **USART2** 설정상태이다.
+다음 역시 [ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **USART2** 설정상태이다.
 
 ![](./img/stm32cubemx_usart2_default_config.png)
 
@@ -106,7 +106,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 
 
-**STM32CubeIDE** 의 **<u>P</u>roject**메뉴의 **Build Project**항목을 클릭하여 테스트 빌드를 수행한다.
+**STM32CubeIDE** 의 **Project**메뉴의 **Build Project**항목을 클릭하여 테스트 빌드를 수행한다.
 
 ![](./img/![](./img/stm32cubeide_project_explore_build_project.png)
 
