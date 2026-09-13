@@ -6,11 +6,11 @@
 
 ##### 개발 환경
 
-**OS: ** **MS Windows11**
+**OS** MS Windows11
 
-**타겟보드: ** **NUCLEO-F103RB**
+**타겟보드** NUCLEO-F103RB
 
-**Development SW Tools: ** **[STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html)** / **[STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)**
+**Development SW Tools** [STM32CubeMX 6.18.1](https://www.st.com/en/development-tools/stm32cubemx.html) / [STM32CubeIDE 2.20](https://www.st.com/en/development-tools/stm32cubeide.html)
 
 ---
 
