@@ -12,6 +12,10 @@ STM32CubeIDE 환경에서 NUCLEO-F103RB 보드를 타겟으로 MCU가 제공하�
 
 [4. printf_lib(printf() 사용자 라이브러리](./doc/printf_lib/printf_lib.md) 
 
+[5. ADC_VR](./doc/ADC_VR/ADC_VR.md) 
+
+[5. Buzzer](./doc/Buzzer/Buzzer.md) 
+
 
 
 ---
