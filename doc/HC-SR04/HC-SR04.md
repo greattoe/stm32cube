@@ -581,7 +581,7 @@ uint16_t echo()
 
 다음은 [**HC-SR04 데이터시트**](https://cdn.sparkfun.com/datasheets/Sensors/Proximity/HCSR04.pdf) 의 거리측정 타이밍 다이어 그램이다. 
 
-![](D:\Dropbox\myGit\STM32Cube\doc\HC-SR04\img\HC-SR04_mesurement_timing_diagram.png)
+![](./img/HC-SR04_mesurement_timing_diagram.png)
 
 `trig()`함수는 위 그림의 Trig input 신호를 발생시키는 함수이고, `echo()`함수는 위 그림 Output 신호의 펄스폭을 μs값으로 구하는 함수이다. 위 그림에서 눈여겨 봐야할 또 한가지 사항은 첫 번 째 Trig input신호와 두 번 째 Trig input신호 사이의 간격이 60(ms)라는 점이다. 이는 연속해서 `trig()`함수를 호출할 때 적어도 60(ms)이상의 시간간격을 두고 호출해야한다는 뜻이다.
 
