@@ -60,15 +60,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 Buzzer가 연결된 PC7을 TIM3의 PWM출력 채널 2번으로 설정.
 
-![](./img/stm32cubemx_config_pc7_2_tim3pwm_ch2.png)
+![](./img/stm32cubemx_config_tim3_n_pc7.png)
 
 TIM3의 Mode and Configuration에서
 
 Clock Source를 Internal Clock으로, Channel2를 PWM Generation CH2로, Prescaler를 64-1로 설정한다.
-
-![](./img/stm32cubemx_tim1_mode_n_config.png)
-
-
 
 여기까지 설정을 반영한 코드 생성을위해 **Generate Code**를 클릭 하기 전 **STM32CubeMX**에서 생성한 프로젝트들을 저장해 둘 폴더를 만들어 두어야 한다. 그 위치는 편의상 **STM32CubeIDEworkspace_2.2.0** 폴더와 같은 폴더에, 폴더 이름은 **STM32CubeProjects**(폴더 이름은 다른 임의의이름(영문, 숫자 조합 한글×)을 사용해도 되나 그 위치와 이름을 정확히 기억하자 )로 만들어 둔다. 아래 그림에서도 **STM32CubeIDEworkspace_2.2.0**폴더가 있는 위치에 **STM32CubeProjects** 폴더가 만들어져 있는 것을 확인할 수 있다.
 
