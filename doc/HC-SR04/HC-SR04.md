@@ -1,8 +1,8 @@
 ## STM32Cube를 이용한 STM32 프로그래밍
 
-### LED Blink
+### HC-SR04 초음파 센서를 이용한 거리측정
 
-**STM32CubeMX**와 **STM32CubeIDE**를 이용하여  **NUCLEO-F103RB**보드의 온 보드 **LED**를 0.5초동안 점등 후, 0.5초동안 소등을 무한 반복하는 **LED Blink**를 구현해 보자.  
+**STM32CubeMX**와 **STM32CubeIDE**를 이용하여  **NUCLEO-F103RB**보드에 연결한 HC-SR04초음파 센서를 이용한 거리 측정.
 
 #### 개발 환경
 
@@ -14,9 +14,28 @@
 
 ---
 
+
+
+HC-SR04초음파 센서와 NUCLEO-F103RB 타겟보드와의 결선은 다음과 같이 연결한다.
+
+| HC-SR04 | NUCLEO-F103RB |
+| ------- | ------------- |
+| Trig    | PB4           |
+| Echo    | PB5           |
+| GND     | GND           |
+| VCC     | +5V           |
+
+![](./img/wiring_HC-SR04.png)
+
+---
+
 **CubeMX에서 설정할 Peripheral**
 
-​	**RCC**의  클럭 소스만 설정 하고 나머지 **Peripheral**은 기본값으로 설정(따로 설정하지 않는다. ) 
+​	**1. RCC** HSI(High Speed Internal Clock) 64MHz로 설정
+
+**2. GPIO** PB4(HC-SR04의 Trig 연결) 를 GPIO Output으로, PB5(HC-SR04의 echo 연결) GPIO Input으로 설정
+
+**3. TIM2** HC-SR04 센서에서 발사된 초음파가 측정 대상까지 왕복하는 데 걸린 시간의 ㎲단위 측정을 위한 타이머 설정
 
 새로운 STM32 프로젝트 생성을 위해 STM32CubeMX 실행 후, 타겟 설정을 위해 **ACCESS TO BOARD SELECTOR**를 클릭한다.
 
@@ -52,15 +71,23 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 ![](./img/stm32cubemx_check_clock.png)
 
+아래 그림에 따르면 TIM2는 APB1버스에 연결되어 있고, 위 그림에 따르면 APB1 Timer clock이 64MHz이므로, TIM2에 공급되는 클럭은 64MHz이다.
+
+![](./img/stm32_f1xx_system_architecture.png)
+
+TIM2를 1㎲마다 카운트 값이 1씩 증가하도록 설정하려면 1/1,000,000초 주기의 클럭 펄스가 타이머에 공급되도록 설정해야한다. 이는 1,000,000(Hz) = 1(MHz)클럭 펄스가 타이머에 공급되도록 설정해야 하는데 앞서 살펴본 바에 따르면 TIM2에 공급되는 클럭 펄스가 64(MHz)이므로 Prescaler 값을 64-1로 설정하여 TIM2를 **1 μs 단위 free-running counter**로 동작시킬 수 잇다. 따라서 Counter Period값은 16비트 카운터가 카운트 할 수 있는 최대값인 65535로 설정한다.
+
+![](./img/stm32cubemx_config_tim2.png)
+
+HC-SR04 초음파센서의 Trig핀이 연결된 PB4는 GPIO Output으로 설정한다.
+
+![](./img/stm32cubemx_config_pb4_output.png)
 
 
-다음은 [ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **GPIO** 설정상태이다.
 
-![](./img/stm32cubemx_gpio_default_config.png)
+HC-SR04 초음파센서의 Echo핀이 연결된 PB5는 GPIO Input으로 설정한다.
 
-다음 역시 [ Initialize all peripheral with their default Mode ? ]팝업 창에서 [ Yes ]를 클릭한 경우의 **USART2** 설정상태이다.
-
-![](./img/stm32cubemx_usart2_default_config.png)
+![](./img/stm32cubemx_config_pb5_input.png)
 
 
 
@@ -98,7 +125,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 ![](./img/stm32cubeide_project_explorer_after_import_project.png)
 
-
+사용자 정의 라이브러리들 중 `uart2_printf.h`와 `delay_us.h`를 HC-SR04프로젝트 폴더의 Core-Inc 폴더에, `uart2_printf.c`와 `delay_us.c`를 HC-SR04프로젝트 폴더의 Core-Src 폴더에 복사 후 Project Explorer에서 HC-SR04프로젝트 선택 후 [F5]키를 눌러 Refresh시킨다.
 
 **Project Explorer**에서 **Blink** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
 
@@ -157,6 +184,8 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim2;
+
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
@@ -166,6 +195,7 @@ UART_HandleTypeDef huart2;
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
+static void MX_TIM2_Init(void);
 static void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -205,6 +235,7 @@ int main(void)
 
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
+  MX_TIM2_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
 
@@ -257,6 +288,51 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 64-1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 65535;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
 }
 
 /**
@@ -313,6 +389,9 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
@@ -325,6 +404,19 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
   /* EXTI interrupt init*/
   HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
@@ -370,48 +462,151 @@ void assert_failed(uint8_t *file, uint32_t line)
 }
 #endif /* USE_FULL_ASSERT */
 
-
 ```
 
-지금 구현하려는 기능은 **NUCLEO-F103RB**보드의 온 보드 **LED**를 0.5초동안 점등 후, 0.5초동안 소등을 무한 반복하는 **LED Blink**이다. 이를 위해 필요한 HAL(Hardware Abstract Layer:하드웨어 추상화 계층) 라이브러리는 임의의 **GPIO Pin**으로 신호를 출력하는 `HAL_GPIO_WritePin()` 과 msec단위의 시간 지연 함수 `HAL_Delay()` 2가지이다.
 
 
-
-`HAL_GPIO_WritePin()`함수원형은 아래와 같다.
+`main.c`의 23~25행의 다음 코드를 찾는다.
 
 ```c
-void HAL_GPIO_WritePin(
-    GPIO_TypeDef *GPIOx,
-    uint16_t GPIO_Pin,
-    GPIO_PinState PinState
-);
+/* USER CODE BEGIN Includes */
+
+/* USER CODE END Includes */
 ```
 
-`HAL_GPIO_WritePin()`함수의 매개변수와 의미는 다음과 같다.
-
-| 매개변수   | 의미                                |
-| ---------- | ----------------------------------- |
-| `GPIOx`    | 사용할 GPIO 포트                    |
-| `GPIO_Pin` | 제어할 GPIO 핀                      |
-| `PinState` | 핀에 출력할 값 (`SET` 또는 `RESET`) |
 
 
-
-`HAL_Delay()`함수원형은 아래와 같다.
+위코드를 다음과 같이 수정 편집 후 저장한다.
 
 ```c
-void HAL_Delay(uint32_t Delay);
+/* USER CODE BEGIN Includes */
+#include "uart2_printf.h"
+#include "delay_us.h"
+/* USER CODE END Includes */
 ```
 
-`HAL_Delay()`함수의 매개변수와 의미는 다음과 같다.
-
-| 매개변수   | 의미                                |
-| ---------- | ----------------------------------- |
-| `Delay`    | 지연할 시간. 단위는 **ms(밀리초)**  |
 
 
+`main.c`의 33~35행의 다음 코드를 찾는다.
 
-`main.c`의 97~100행의 다음 코드를 찾는다.
+```c
+/* USER CODE BEGIN PD */
+
+/* USER CODE END PD */
+```
+
+
+
+위코드를 다음과 같이 수정 편집 후 저장한다.
+
+```c
+/* USER CODE BEGIN PD */
+#define HIGH 1
+#define LOW  0
+/* USER CODE END PD */
+```
+
+
+
+`main.c`의 56~58행의 다음 코드를 찾는다.
+
+```c
+/* USER CODE BEGIN PFP */
+
+/* USER CODE END PFP */
+```
+
+
+
+위코드를 다음과 같이 수정 편집 후 저장한다.
+
+```c
+/* USER CODE BEGIN PFP */
+void trig(void);
+uint16_t echo(void);
+/* USER CODE END PFP */
+```
+
+
+
+
+
+`main.c`의 286~288행의 다음 코드를 찾는다.
+
+```c
+/* USER CODE BEGIN 4 */
+
+/* USER CODE END 4 */
+```
+
+
+
+위코드를 다음과 같이 수정 편집 후 저장한다.
+
+```c
+/* USER CODE BEGIN 4 */
+void trig()
+{
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, HIGH);
+	delay_us(10);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, LOW);
+}
+
+uint16_t echo()
+{
+	uint16_t echo_time = 0;
+	uint16_t timeout_start = __HAL_TIM_GET_COUNTER(&htim2);
+	while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5)== LOW)
+	{
+		if ((uint16_t)(__HAL_TIM_GET_COUNTER(&htim2) - timeout_start) > 30000)
+		            return 0;
+		else;
+	}
+	uint16_t start = __HAL_TIM_GET_COUNTER(&htim2);
+	while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5)== HIGH)
+	{
+		if ((uint16_t)(__HAL_TIM_GET_COUNTER(&htim2) - start) > 30000)
+				            return 0;
+		else;
+	}
+	uint16_t end = __HAL_TIM_GET_COUNTER(&htim2);
+	echo_time = (uint16_t)(end - start);
+	if( echo_time >= 240 && echo_time <= 23000 )
+		return echo_time;
+	else
+		return 0;
+}
+/* USER CODE END 4 */
+```
+
+
+
+
+
+`main.c`의 96~98행의 다음 코드를 찾는다.
+
+```c
+/* USER CODE BEGIN 2 */
+
+  /* USER CODE END 2 */
+```
+
+
+
+위코드를 다음과 같이 수정 편집 후 저장한다.
+
+```c
+/* USER CODE BEGIN 2 */
+  printf("Mesure Distance with HC-SR04!\n");
+      HAL_TIM_Base_Start(&htim2);
+  /* USER CODE END 2 */
+```
+
+
+
+
+
+`main.c`의 101~104행의 다음 코드를 찾는다.
 
 ```c
 /* USER CODE BEGIN WHILE */
@@ -429,48 +624,413 @@ void HAL_Delay(uint32_t Delay);
 /* USER CODE BEGIN WHILE */
   while (1)
   {
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 1);
-	  HAL_Delay(500);
-	  HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, 0);
-	  HAL_Delay(500);
+	  trig();
+	  uint16_t echo_time = echo();
+	  if(echo_time == 0) {
+		  printf("out of range!\n");
+	  }
+	  else {
+		  uint16_t dist = 17 * echo_time / 100;
+		  printf("distance = %d(mm)\n", dist);
+	  }
+	  HAL_Delay(100);
     /* USER CODE END WHILE */
 ```
 
 
 
-**STM32CubeIDE**의 **Project** 메뉴의 **Build Project** 항목을 클릭하여 프로젝트를 빌드한다. 
+다음은 위의 모든 편집내용이 반영된 `main.c`전체 코드이다.
 
-![](./img/![](./img/stm32cubeide_project_explore_build_project.png)
+```c
+/* USER CODE BEGIN Header */
+/**
+  ******************************************************************************
+  * @file           : main.c
+  * @brief          : Main program body
+  ******************************************************************************
+  * @attention
+  *
+  * Copyright (c) 2026 STMicroelectronics.
+  * All rights reserved.
+  *
+  * This software is licensed under terms that can be found in the LICENSE file
+  * in the root directory of this software component.
+  * If no LICENSE file comes with this software, it is provided AS-IS.
+  *
+  ******************************************************************************
+  */
+/* USER CODE END Header */
+/* Includes ------------------------------------------------------------------*/
+#include "main.h"
+
+/* Private includes ----------------------------------------------------------*/
+/* USER CODE BEGIN Includes */
+#include "uart2_printf.h"
+#include "delay_us.h"
+/* USER CODE END Includes */
+
+/* Private typedef -----------------------------------------------------------*/
+/* USER CODE BEGIN PTD */
+
+/* USER CODE END PTD */
+
+/* Private define ------------------------------------------------------------*/
+/* USER CODE BEGIN PD */
+#define HIGH 1
+#define LOW  0
+/* USER CODE END PD */
+
+/* Private macro -------------------------------------------------------------*/
+/* USER CODE BEGIN PM */
+
+/* USER CODE END PM */
+
+/* Private variables ---------------------------------------------------------*/
+TIM_HandleTypeDef htim2;
+
+UART_HandleTypeDef huart2;
+
+/* USER CODE BEGIN PV */
+
+/* USER CODE END PV */
+
+/* Private function prototypes -----------------------------------------------*/
+void SystemClock_Config(void);
+static void MX_GPIO_Init(void);
+static void MX_TIM2_Init(void);
+static void MX_USART2_UART_Init(void);
+/* USER CODE BEGIN PFP */
+void trig(void);
+uint16_t echo(void);
+/* USER CODE END PFP */
+
+/* Private user code ---------------------------------------------------------*/
+/* USER CODE BEGIN 0 */
+
+/* USER CODE END 0 */
+
+/**
+  * @brief  The application entry point.
+  * @retval int
+  */
+int main(void)
+{
+
+  /* USER CODE BEGIN 1 */
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_TIM2_Init();
+  MX_USART2_UART_Init();
+  /* USER CODE BEGIN 2 */
+    printf("Mesure Distance with HC-SR04!\n");
+        HAL_TIM_Base_Start(&htim2);
+    /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+	  trig();
+	  uint16_t echo_time = echo();
+	  if(echo_time == 0) {
+		  printf("out of range!\n");
+	  }
+	  else {
+		  uint16_t dist = 17 * echo_time / 100;
+		  printf("distance = %d(mm)\n", dist);
+	  }
+	  HAL_Delay(100);
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+  }
+  /* USER CODE END 3 */
+}
+
+/**
+  * @brief System Clock Configuration
+  * @retval None
+  */
+void SystemClock_Config(void)
+{
+  RCC_OscInitTypeDef RCC_OscInitStruct = {0};
+  RCC_ClkInitTypeDef RCC_ClkInitStruct = {0};
+
+  /** Initializes the RCC Oscillators according to the specified parameters
+  * in the RCC_OscInitTypeDef structure.
+  */
+  RCC_OscInitStruct.OscillatorType = RCC_OSCILLATORTYPE_HSI;
+  RCC_OscInitStruct.HSIState = RCC_HSI_ON;
+  RCC_OscInitStruct.HSICalibrationValue = RCC_HSICALIBRATION_DEFAULT;
+  RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+  RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI_DIV2;
+  RCC_OscInitStruct.PLL.PLLMUL = RCC_PLL_MUL16;
+  if (HAL_RCC_OscConfig(&RCC_OscInitStruct) != HAL_OK)
+  {
+    Error_Handler();
+  }
+
+  /** Initializes the CPU, AHB and APB buses clocks
+  */
+  RCC_ClkInitStruct.ClockType = RCC_CLOCKTYPE_HCLK|RCC_CLOCKTYPE_SYSCLK
+                              |RCC_CLOCKTYPE_PCLK1|RCC_CLOCKTYPE_PCLK2;
+  RCC_ClkInitStruct.SYSCLKSource = RCC_SYSCLKSOURCE_PLLCLK;
+  RCC_ClkInitStruct.AHBCLKDivider = RCC_SYSCLK_DIV1;
+  RCC_ClkInitStruct.APB1CLKDivider = RCC_HCLK_DIV2;
+  RCC_ClkInitStruct.APB2CLKDivider = RCC_HCLK_DIV1;
+
+  if (HAL_RCC_ClockConfig(&RCC_ClkInitStruct, FLASH_LATENCY_2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+}
+
+/**
+  * @brief TIM2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_TIM2_Init(void)
+{
+
+  /* USER CODE BEGIN TIM2_Init 0 */
+
+  /* USER CODE END TIM2_Init 0 */
+
+  TIM_ClockConfigTypeDef sClockSourceConfig = {0};
+  TIM_MasterConfigTypeDef sMasterConfig = {0};
+
+  /* USER CODE BEGIN TIM2_Init 1 */
+
+  /* USER CODE END TIM2_Init 1 */
+  htim2.Instance = TIM2;
+  htim2.Init.Prescaler = 64-1;
+  htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+  htim2.Init.Period = 65535;
+  htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+  htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
+  if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+  if (HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+  sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+  if (HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN TIM2_Init 2 */
+
+  /* USER CODE END TIM2_Init 2 */
+
+}
+
+/**
+  * @brief USART2 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_USART2_UART_Init(void)
+{
+
+  /* USER CODE BEGIN USART2_Init 0 */
+
+  /* USER CODE END USART2_Init 0 */
+
+  /* USER CODE BEGIN USART2_Init 1 */
+
+  /* USER CODE END USART2_Init 1 */
+  huart2.Instance = USART2;
+  huart2.Init.BaudRate = 115200;
+  huart2.Init.WordLength = UART_WORDLENGTH_8B;
+  huart2.Init.StopBits = UART_STOPBITS_1;
+  huart2.Init.Parity = UART_PARITY_NONE;
+  huart2.Init.Mode = UART_MODE_TX_RX;
+  huart2.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+  huart2.Init.OverSampling = UART_OVERSAMPLING_16;
+  if (HAL_UART_Init(&huart2) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN USART2_Init 2 */
+
+  /* USER CODE END USART2_Init 2 */
+
+}
+
+/**
+  * @brief GPIO Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_GPIO_Init(void)
+{
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
+  /* USER CODE BEGIN MX_GPIO_Init_1 */
+
+  /* USER CODE END MX_GPIO_Init_1 */
+
+  /* GPIO Ports Clock Enable */
+  __HAL_RCC_GPIOC_CLK_ENABLE();
+  __HAL_RCC_GPIOD_CLK_ENABLE();
+  __HAL_RCC_GPIOA_CLK_ENABLE();
+  __HAL_RCC_GPIOB_CLK_ENABLE();
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, GPIO_PIN_RESET);
+
+  /*Configure GPIO pin : B1_Pin */
+  GPIO_InitStruct.Pin = B1_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : LD2_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB4 */
+  GPIO_InitStruct.Pin = GPIO_PIN_4;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : PB5 */
+  GPIO_InitStruct.Pin = GPIO_PIN_5;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+  /* EXTI interrupt init*/
+  HAL_NVIC_SetPriority(EXTI15_10_IRQn, 0, 0);
+  HAL_NVIC_EnableIRQ(EXTI15_10_IRQn);
+
+  /* USER CODE BEGIN MX_GPIO_Init_2 */
+
+  /* USER CODE END MX_GPIO_Init_2 */
+}
+
+/* USER CODE BEGIN 4 */
+void trig()
+{
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, HIGH);
+	delay_us(10);
+	HAL_GPIO_WritePin(GPIOB, GPIO_PIN_4, LOW);
+}
+
+uint16_t echo()
+{
+	uint16_t echo_time = 0;
+	uint16_t timeout_start = __HAL_TIM_GET_COUNTER(&htim2);
+	while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5)== LOW)
+	{
+		if ((uint16_t)(__HAL_TIM_GET_COUNTER(&htim2) - timeout_start) > 30000)
+		            return 0;
+		else;
+	}
+	uint16_t start = __HAL_TIM_GET_COUNTER(&htim2);
+	while(HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_5)== HIGH)
+	{
+		if ((uint16_t)(__HAL_TIM_GET_COUNTER(&htim2) - start) > 30000)
+				            return 0;
+		else;
+	}
+	uint16_t end = __HAL_TIM_GET_COUNTER(&htim2);
+	echo_time = (uint16_t)(end - start);
+	if( echo_time >= 240 && echo_time <= 23000 )
+		return echo_time;
+	else
+		return 0;
+}
+/* USER CODE END 4 */
+
+/**
+  * @brief  This function is executed in case of error occurrence.
+  * @retval None
+  */
+void Error_Handler(void)
+{
+  /* USER CODE BEGIN Error_Handler_Debug */
+  /* User can add his own implementation to report the HAL error return state */
+  __disable_irq();
+  while (1)
+  {
+  }
+  /* USER CODE END Error_Handler_Debug */
+}
+#ifdef USE_FULL_ASSERT
+/**
+  * @brief  Reports the name of the source file and the source line number
+  *         where the assert_param error has occurred.
+  * @param  file: pointer to the source file name
+  * @param  line: assert_param error line source number
+  * @retval None
+  */
+void assert_failed(uint8_t *file, uint32_t line)
+{
+  /* USER CODE BEGIN 6 */
+  /* User can add his own implementation to report the file name and line number,
+     ex: printf("Wrong parameters value: file %s on line %d\r\n", file, line) */
+  /* USER CODE END 6 */
+}
+#endif /* USE_FULL_ASSERT */
+
+```
 
 
 
-빌드 결과는 **ST-Link**를 통해 타겟보드에 업로드 해야 하므로 그 전에  **ST-Link**의 펌웨어를 업그레이드 하기 위해 **<u>H</u>elp**메뉴의 **ST-Link Upgrade**항목을 클릭한다.( 이 작업은 새 펌웨어가 나오지 않는 한 1회만 수행하면 된다. )
-
-![](./img\st_link_upgrade1.png)
-
-[ Open in update mode ] 버튼을 클릭한다.
-
-![](./img\st_link_upgrade2.png)
-
-[ Open in update mode ] 를 클릭 하면 Unknown으로  표시되던 Current Firmware Type 및 Version, Update to Firmware 정보가 표시된다. 이 때 [Upgrade] 버튼을 클릭한다.
-
-![](./img\st_link_upgrade3.png)
-
-업그레이드 진행상태가 표시된다.
-
-![](./img\st_link_upgrade4.png)
+**STM32CubeIDE**의 **Project** 메뉴의 **Build Project** 항목을 클릭하여 프로젝트를 빌드한다. ![](./img/stm32cubeide_project_explore_build_project.png)
 
 
 
-업그레이드가 완료되면 Upgrade sucessful. 메세지가 나타난다.
-
-![](./img\st_link_upgrade5.png)
-
-새로운 **ST-Link** 펌웨어가 나오지 않는 한 더 이상의 업데이트는  필요 없다. 이제 앞서 빌드한 결과를 타겟보드에 올려 동작 시켜보자. **STM32CubeIDE**의 **Run**메뉴의 **Run**항목을 클릭한다.
+이제 앞서 빌드한 결과를 타겟보드에 올려 동작 시켜보자. **STM32CubeIDE**의 **Run**메뉴의 **Run**항목을 클릭한다.
 
 ![](./img/stm32cubeide_project_explorer_run_run.png)
 
-이제 **NUCLEO-F103RB** 타겟보드의 검은색 리셋 스위치 아래 녹색 LED(LED2)가 0.5초동안 켜졌다, 다시 0.5초동안 꺼졌다를 반복하는 것을 확인한다.
+시리얼 통신 에뮬레이터를 통해 HC-SR04 초음파 센서로 측정한 거리가 시리얼 통신으로 수신되는지 확인해보자. 우선 타겟보드가 연결된 포트번호를 확인해야 한다.
+
+ <img src="./img/excution_window.png" style="zoom:67%;" />
+
+![](./img/win_key.png) + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc`  입력 후, [ 확인 ] 버튼을 클릭하여 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
+
+![](./img/check_port_num_on_device_manager.png)
+
+이제 적당한 시리얼 통신 에뮬레이터 프로그램( **[Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)**, **[Tera Term](https://teratermproject.github.io/index-en.html)** 등 )에서 포트 COM3을 Baudrate 115200 으로 열어 HC-SR04 초음파센서로 측정된 거리가 수신되는 것을 확인한다.
+
+![](./img/putty.png)
+
+
 
 
 

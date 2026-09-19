@@ -14,7 +14,9 @@ STM32CubeIDE 환경에서 NUCLEO-F103RB 보드를 타겟으로 MCU가 제공하�
 
 [5. ADC_VR](./doc/ADC_VR/ADC_VR.md) 
 
-[5. Buzzer](./doc/Buzzer/Buzzer.md) 
+[6. Buzzer](./doc/Buzzer/Buzzer.md) 
+
+[7. HC-SR04](./doc/HC-SR04/HC-SR04.md) 
 
 
 
