@@ -909,6 +909,16 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 서보모터의 동작상태를 확인한다.
 
+![](./img/dso1.bmp)
+
+
+
+![](./img/dso2.bmp)
+
+
+
+![](./img/dso3.bmp)
+
 
 
 
