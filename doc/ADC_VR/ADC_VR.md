@@ -2,7 +2,7 @@
 
 ### LED Blink
 
-**NUCLEO-F103RB**보드의 **PA0**핀에 가변저항을 연결하고, **STM32CubeMX**와 **STM32CubeIDE**를 이용하여  가변저항에 걸리는 전압을 **Analog to Digital Converting**하여 **USART2**를 통해 `printf()`로 출력해보자.
+**NUCLEO-F103RB**보드의 **PC0**핀에 가변저항을 연결하고, **STM32CubeMX**와 **STM32CubeIDE**를 이용하여  가변저항에 걸리는 전압을 **Analog to Digital Converting**하여 **USART2**를 통해 `printf()`로 출력해보자.
 
 #### 개발 환경
 
