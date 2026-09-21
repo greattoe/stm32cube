@@ -80,27 +80,11 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
   서보모터를 제어하기위해서는 주기가 20(ms) 즉 50(Hz)인 PWM 파형이 필요하다. Tim2 Mode and Configuration에서 Parameter Settings의 Prescaler와 Counter Period에 적절한 값을 설정하여 이를 맞춰줘야 한다. 
 
-  Tim4에는 64(MHz) 클럭이 공급되는 것은 이미 확인 했다. 이 클럭은은 Prescaler에 의해 분주되어 타이머에 공급된다. 64(MHz)는 64,000,000Hz 인데 Prescaler Parameter를 1280으로 설정한다면, 타이머에는 64,000,000 / 1280 = 50,000(Hz)의 클럭이 공급된다. 이 때 타이머는 카운터로 동작하며, 입력되는 클럭을 카운트한다. 1초에 50,000개의 클럭이 입력되므로, 클럭 1개를 카운트 하는 데에 1/50,000초가 소요된다. 이 때 Counter Periode Parameter로 1,000을 설정한다면 클럭을 1,000번 카운트 할 때 마다 타이머 인터럽트를 발생시키게 된다. 따라서 이 때의 인터럽트 주기는 1/50,000초 × 1,000 = 1,000/50,000=1/50=2/100 초, 즉 20(ms)가 되어 서보모터를 제어하기위한 주기 20(ms)인 PWM 파형을 발생시킬 준비가 되었다. 
+  Tim4에는 64(MHz) 클럭이 공급되는 것은 이미 확인 했다. 이 클럭은은 Prescaler에 의해 분주되어 타이머에 공급된다. 64(MHz)는 64,000,000Hz 인데 Prescaler Parameter를 1280으로 설정한다면, 타이머에는 64,000,000 / 1280 = 50,000(Hz)의 클럭이 공급된다. 이 때 타이머는 카운터로 동작하며, 입력되는 클럭을 카운트한다. 1초에 50,000개의 클럭이 입력되므로, 클럭 1개를 카운트 하는 데에 1/50,000초가 소요된다. 이 때 Counter Periode Parameter로 1,000을 설정한다면 클럭을 1,000번 카운트 할 때 마다 타이머 인터럽트를 발생시키게 된다. 따라서 이 때의 인터럽트 주기는 1/50,000초 × 1,000 = 1,000/50,000=1/50=2/100 초, 즉 20(ms)가 되어 서보모터를 제어하기위한 주기 20(ms)인 PWM 파형을 발생시킬 준비가 되었다. 이를 바탕으로 TIM2 타이머의 Parameter들을 설정해보자.
 
-  이제 TIM2 타이머의 Parameter들을 설정해보자.
 
-  Prescaler값이 1280 이라는 것은 1280개의 클럭이 입력될 때마다 1개의 클럭을 출력한다는 의미이다. 카운트를 1부터 시작한다면 1280개의 클럭이 입력됬을 때의 카운트 값은 1280 이겠지만, 컴퓨터는 0부터 카운트를 시작하므로 1280개의 클럭이 입력됬을 때의 카운트 값은 1281이된다. 따라서 Prescaler는 `1280-1`로 설정하고, 같은 이유로 Counter Period는 `1000-1`로 설정한다.
-
-  ![](./img/tim3_mode_n_config1.png)
-
-  
-
-  ![](./img/tim3_mode_n_config2.png)
-
-  
-
-  **1.3 TIM3 설정** TIM3 PWM 출력 채널 1번(PA6)으로 50(ms)주기의 PWM이 출력되도록 설정
-
-  Pinout & Configuration탭의 Timers의 하위항목 중 Tim2를 선택한다.  Tim2 Mode and Configuration의 Mode에서 Clock Source를 Internal Clock으로, Channel1를 PWM Generation CH1로 변경 후, 화면 우측의 PINout 탭에서 PA0 핀을 클릭하여 TIM2_CH1이 나타나는 지 확인한다. 
 
 ![](./img/stm32cubemx_config_tim2.png)
-
-Tim2의 Configuration의 Parameter Settings 탭의 Prescaler,  Counter Period 설정은 앞서 TIM2에서 계산한 설정값을 참조하여 Tim2 Mode and Configuration의 Mode에서 Parameter Settings 탭의 Prescaler 값을 `1280-1`로, Counter Mode를 `Up`으로, Counter Period 값을 `1000-1`로 설정한다.
 
 
 
@@ -493,51 +477,7 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 
 
-`main.c`의 33~35행의 다음코드를
-
-```c
-	/* USER CODE BEGIN PD */
-
-/* USER CODE END PD */
-```
-
-아래와 같이 수정한다. 
-
-```c
-/* USER CODE BEGIN PD */
-#define MAX_POS  125
-#define MIN_POS   25
-#define POS_STEP   1
-/* USER CODE END PD */
-```
-
-
-
-
-
-`main.c`의 50~52행의 다음코드를
-
-```c
-/* USER CODE BEGIN PV */
-
-/* USER CODE END PV */
-```
-
-아래와 같이 수정한다. 
-
-```c
-/* USER CODE BEGIN PV */
-uint8_t ch;
-uint8_t pos_pan = 75;
-uint8_t pos_tilt = 75;
-/* USER CODE END PV */
-```
-
-
-
-
-
-`main.c`의 103~105행의 다음코드를
+`main.c`의 96~98행의 다음코드를
 
 ```c
 /* USER CODE BEGIN 2 */
@@ -549,97 +489,38 @@ uint8_t pos_tilt = 75;
 
 ```c
  /* USER CODE BEGIN 2 */
-  printf("P/T Control!\n");
+  printf("Servo Control!\n");
   HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
-  HAL_TIM_PWM_Start(&htim3,TIM_CHANNEL_1);
-  __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, pos_pan);
-  __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, pos_tilt);
+  __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 75);
+HAL_Delay(10);
   /* USER CODE END 2 */
 ```
 
 
 
-`main.c`의 112~115행의 다음코드를 `main.c`의 다음코드를 
+`main.c`의 104~108행의 다음코드를 `main.c`의 다음코드를 
 
 ```c
 /* USER CODE BEGIN WHILE */
+  while (1)
   {
     /* USER CODE END WHILE */
 ```
 
 아래와 같이 수정한다. 
 
+
+
 ```c
- /* USER CODE BEGIN WHILE */
+/* USER CODE BEGIN WHILE */
   while (1)
   {
-	  if (HAL_UART_Receive(&huart2, &ch, 1, 10) == HAL_OK)
-	  {
-		  if(ch == 'w')
-		  {
-			  if(pos_tilt - POS_STEP >= MIN_POS)
-			  {
-				  pos_tilt = pos_tilt - POS_STEP;
-			  }
-			  else
-			  {
-				  pos_tilt = MIN_POS;
-			  }
-		  }
-		  else if(ch == 's')
-		  {
-			  if(pos_tilt + POS_STEP <= MAX_POS)
-			  {
-				  pos_tilt =  pos_tilt + POS_STEP;
-			  }
-			  else
-			  {
-				  pos_tilt = MAX_POS;
-			  }
-		  }
-		  else if(ch == 'a')
-		  {
-			  if(pos_pan + POS_STEP <= MAX_POS)
-			  {
-				  pos_pan = pos_pan + POS_STEP;
-			  }
-			  else
-			  {
-				  pos_pan = MAX_POS;
-			  }
-		  }
-		  else if(ch == 'd')
-		  {
-			  if(pos_pan - POS_STEP >= MIN_POS)
-			  {
-				  pos_pan = pos_pan - POS_STEP;
-			  }
-			  else
-			  {
-				  pos_pan = MIN_POS;
-			  }
-		  }
-
-		  else if(ch == 'i')
-		  {
-			  pos_pan = 75;
-			  pos_tilt = 75;
-		  }
-	  else
-	  {
-		  continue;
-	  }
-	  __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, pos_pan);
-	  HAL_Delay(10);
-	  __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, pos_tilt);
-	  HAL_Delay(10);
-	  printf("pos_pan = %d, pos_tilt = %d.\n", pos_pan, pos_tilt);
-	  }
-
+      __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 25);
+    HAL_Delay(1000);
+      __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 125);
+    HAL_Delay(1000);
     /* USER CODE END WHILE */
 ```
-
-
 
 
 
