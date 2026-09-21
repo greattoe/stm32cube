@@ -559,7 +559,7 @@ HAL_Delay(10);
 /* USER CODE END PTD */
 
 /* Private define ------------------------------------------------------------*/
-	/* USER CODE BEGIN PD */
+/* USER CODE BEGIN PD */
 #define MAX_POS  125
 #define MIN_POS   25
 #define POS_STEP   1
@@ -701,7 +701,7 @@ int main(void)
 	  HAL_Delay(10);
 	  __HAL_TIM_SetCompare(&htim3, TIM_CHANNEL_1, pos_tilt);
 	  HAL_Delay(10);
-	  printf("pos_pan = %d, pos_tilt = %d.\n", pos_pan, pos_tilt);
+	  printf(": pos_pan = %d, pos_tilt = %d.\n", pos_pan, pos_tilt);
 	  }
 
     /* USER CODE END WHILE */
