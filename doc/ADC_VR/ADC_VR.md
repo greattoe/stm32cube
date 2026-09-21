@@ -2,7 +2,7 @@
 
 ### LED Blink
 
-**NUCLEO-F103RB**보드의 **PC0**핀에 가변저항을 연결하고, **STM32CubeMX**와 **STM32CubeIDE**를 이용하여  가변저항에 걸리는 전압을 **Analog to Digital Converting**하여 **USART2**를 통해 `printf()`로 출력해보자.
+**NUCLEO-F103RB**보드의 **PA0**핀에 가변저항을 연결하고, **STM32CubeMX**와 **STM32CubeIDE**를 이용하여  가변저항에 걸리는 전압을 **Analog to Digital Converting**하여 **USART2**를 통해 `printf()`로 출력해보자.
 
 #### 개발 환경
 
@@ -48,9 +48,9 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 ![](./img/stm32cubemx_check_clock.png)
 
-**Pinout & Configuration**탭 **Analog**카테고리의 **ADC1**의 **Mode**항목에서 [  ]**IN10**에 체크( **GPIO** **PC0**의 **AFIO**(Alternative Function Input Output)중 하나인 **ADC1**입력채널10번 기능 선택 )
+**Pinout & Configuration**탭 **Analog**카테고리의 **ADC1**의 **Mode**항목에서 [  ]**IN10**에 체크( **GPIO** **PA0**의 **AFIO**(Alternative Function Input Output)중 하나인 **ADC1**입력채널0번 기능 선택 )
 
-![](./img\/stm32cubemx_adc1_mode_n_config.png)
+![](./img/stm32cubemx_config_adc1.png)
 
 **Configuration**항목에서
 

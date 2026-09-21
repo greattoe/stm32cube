@@ -125,7 +125,7 @@ HC-SR04 초음파센서의 Echo핀이 연결된 PB5는 GPIO Input으로 설정�
 
 ![](./img/stm32cubeide_project_explorer_after_import_project.png)
 
-사용자 정의 라이브러리들 중 `uart2_printf.h`와 `delay_us.h`를 HC-SR04프로젝트 폴더의 Core-Inc 폴더에, `uart2_printf.c`와 `delay_us.c`를 HC-SR04프로젝트 폴더의 Core-Src 폴더에 복사 후 Project Explorer에서 HC-SR04프로젝트 선택 후 [F5]키를 눌러 Refresh시킨다.
+`user_lib`폴더의 사용자 정의 라이브러리들 중 `uart2_printf.h`와 `delay_us.h`를 HC-SR04프로젝트 폴더의 Core-Inc 폴더에, `uart2_printf.c`와 `delay_us.c`를 HC-SR04프로젝트 폴더의 Core-Src 폴더에 복사 후 Project Explorer에서 HC-SR04프로젝트 선택 후 [F5]키를 눌러 Refresh시킨다.
 
 **Project Explorer**에서 **Blink** > **Core** > **Src** > **main.c** 순서로 각 항목을 확장시켜 **main.c**를 연다.
 

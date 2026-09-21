@@ -18,9 +18,11 @@ STM32CubeIDE 환경에서 NUCLEO-F103RB 보드를 타겟으로 MCU가 제공하�
 
 [7. HC-SR04](./doc/HC-SR04/HC-SR04.md) 
 
-[8. 초음파 거리측정기](./doc/DistMeter/DistMeter.md) 
+[8. Servo](./doc/Servo/Servo.md) 
 
-[8. 초음파 장애물검지기](./doc/obs_detect/obs_detect.md) 
+[9. 초음파 거리측정기](./doc/DistMeter/DistMeter.md) 
+
+[10. 초음파 장애물검지기](./doc/obs_detect/obs_detect.md) 
 
 
 
