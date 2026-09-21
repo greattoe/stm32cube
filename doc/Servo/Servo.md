@@ -76,7 +76,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
   APB1 Timer Clock이 64(MHz)라는 것을 확인할 수 있다. ![](./img/tim4_clock_config.png)
 
-  
+  ![](./img/pwm_vs_servo.png)
 
   서보모터를 제어하기위해서는 주기가 20(ms) 즉 50(Hz)인 PWM 파형이 필요하다. Tim2 Mode and Configuration에서 Parameter Settings의 Prescaler와 Counter Period에 적절한 값을 설정하여 이를 맞춰줘야 한다. 
 
