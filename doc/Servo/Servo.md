@@ -156,7 +156,7 @@ CLOCK설정 확인을 위해 **Clock Configuration**탭을 클릭하여 최초 *
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "uart2_printf.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -229,13 +229,20 @@ int main(void)
   MX_TIM2_Init();
   MX_USART2_UART_Init();
   /* USER CODE BEGIN 2 */
-
+   printf("Servo Control!\n");
+   HAL_TIM_PWM_Start(&htim2,TIM_CHANNEL_1);
+   __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 75);
+ HAL_Delay(10);
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  while (1)
-  {
+   while (1)
+   {
+       __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 25);
+     HAL_Delay(1000);
+       __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 125);
+     HAL_Delay(1000);
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
@@ -301,9 +308,9 @@ static void MX_TIM2_Init(void)
 
   /* USER CODE END TIM2_Init 1 */
   htim2.Instance = TIM2;
-  htim2.Init.Prescaler = 0;
+  htim2.Init.Prescaler = 1280-1;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 65535;
+  htim2.Init.Period = 1000-1;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
@@ -450,7 +457,6 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
 ```
 
 
@@ -560,7 +566,9 @@ HAL_Delay(10);
 
 /* Private define ------------------------------------------------------------*/
 /* USER CODE BEGIN PD */
-
+#define MAX_POS 125
+#define MIN_POS  25
+#define POS_STEP  1
 /* USER CODE END PD */
 
 /* Private macro -------------------------------------------------------------*/
@@ -574,7 +582,8 @@ TIM_HandleTypeDef htim2;
 UART_HandleTypeDef huart2;
 
 /* USER CODE BEGIN PV */
-
+uint8_t ch;
+uint8_t pos = 75;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -633,16 +642,48 @@ int main(void)
   /* USER CODE BEGIN WHILE */
    while (1)
    {
-       __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 25);
-     HAL_Delay(1000);
-       __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, 125);
-     HAL_Delay(1000);
+	   if(HAL_UART_Receive(&huart2, &ch, 1, 10) == HAL_OK)
+	   {
+		   if(ch == '=') //'+'
+		   {
+			   if(pos + POS_STEP <= MAX_POS)
+			   {
+				   pos = pos + POS_STEP;
+			   }
+			   else
+			   {
+				   pos = MAX_POS;
+			   }
+		   }
+		   else if(ch == '-')
+		   {
+			   if(pos - POS_STEP >= MIN_POS)
+			   {
+				   pos = pos - POS_STEP;
+			   }
+			   else
+			   {
+				   pos = MIN_POS;
+			   }
+		   }
+		   else if(ch == 'i')
+		   {
+			   pos = 75;
+		   }
+		   else
+			  {
+				  continue;
+			  }
+       __HAL_TIM_SetCompare(&htim2, TIM_CHANNEL_1, pos);
+     HAL_Delay(10);
+     	 printf(": position = %d\n", pos);
+	   }
+   }
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
-}
 
 /**
   * @brief System Clock Configuration
