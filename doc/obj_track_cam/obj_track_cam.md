@@ -4,9 +4,19 @@
 
 <img src="./img/usb_cam.png" style="zoom:50%;" /><img src="./img/micro_pantilt.png" style="zoom:50%;" />
 
+#### 개발 환경
+
+**OS:** MS Windows11
+
+**개발언어:** Python 3.13.14
+
+**타겟보드:** NUCLEO-F103RB
+
 [**시연 영상**](https://www.youtube.com/watch?v=aH_Pc-fzJRQ)
 
 [**NUCLEO-F103RB 펌웨어 작성 **](../PT_Control/PT_Control.md)
+
+---
 
 필수 라이브러리 설치
 
