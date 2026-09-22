@@ -1175,11 +1175,11 @@ void assert_failed(uint8_t *file, uint32_t line)
 
 시리얼 통신 에뮬레이터를 통해 HC-SR04 초음파 센서로 측정한 거리가 시리얼 통신으로 수신되는지 확인해보자. 우선 타겟보드가 연결된 포트번호를 확인해야 한다.
 
- <img src="D:/Dropbox/myGit/STM32Cube/doc/HC-SR04/img/excution_window.png" style="zoom:67%;" />
+ <img src="./img/excution_window.png" style="zoom:67%;" />
 
 ![](D:/Dropbox/myGit/STM32Cube/doc/HC-SR04/img/win_key.png) + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc`  입력 후, [ 확인 ] 버튼을 클릭하여 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
 
-![](D:/Dropbox/myGit/STM32Cube/doc/HC-SR04/img/check_port_num_on_device_manager.png)
+![](./img/check_port_num_on_device_manager.png)
 
 이제 적당한 시리얼 통신 에뮬레이터 프로그램( **[Putty](https://www.chiark.greenend.org.uk/~sgtatham/putty/latest.html)**, **[Tera Term](https://teratermproject.github.io/index-en.html)** 등 )에서 포트 COM3을 Baudrate 115200 으로 열어 `w`, `s`, `a`, `d` 키에 대해 PAN/Tilt가 `Tilt Up`, `Tilt Down`, `Pan Left`, `Pan Right`의 동작이 수행되는 것을 확인한다.
 

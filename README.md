@@ -26,6 +26,8 @@ STM32CubeIDE 환경에서 NUCLEO-F103RB 보드를 타겟으로 MCU가 제공하�
 
 [10. P/T Control](./doc/PT_Control/PT_Control.md) 
 
+[10. obj_track_cam](./doc/obj_track_cam/obj_track_cam.md) 
+
 
 
 
