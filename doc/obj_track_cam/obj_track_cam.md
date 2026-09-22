@@ -2,7 +2,7 @@
 
 준비물 USB 카메라와 마이크로 팬틸트
 
-<img src="./img/usb_cam.png" style="zoom:50%;" /><img src="./img/micro_pantilt.png" style="zoom:50%;" />
+<img src="./img/usb_cam.png" style="zoom:25%;" /><img src="./img/micro_pantilt.png" style="zoom:25%;" />
 
 #### 개발 환경
 
@@ -97,7 +97,7 @@ PS C:\Users\user\py_work> python .\test_getch.py
 Type any Key!(Type'Q' for quit this Program)
 
 fghjkjhghjklkjhghjklkjhgmnbvcxlkjhgfoiuytrkjhgfdoiuytr09876545678987654  Q
-PS D:\Dropbox\_lectures\Arm\2026NPU AI\py_work>
+PS C:\Users\user\py_work>
 ```
 
 `w`, `s`, `a`, `d` `i` 키를 누르면 시리얼 통신으로 해당 문자를 전송하는 `control_PT.py`를 작성을 위해 NUCLEO-F103RB 보드가 연결된 포트 번호를 확인한다.
@@ -190,7 +190,7 @@ PS D:\Users\user\py_work>
 
 OpenCV를 이용한 파란색 추출
 
-<img src="./img/origin.png" style="zoom:50%;" />
+<img src="./img/origin.png" style="zoom:25%;" />
 
 위 `origin.png` 이미지 파일에서 파란색을 추출하여 `blue.png` 이미지 파일로 저장하는 파이썬 코드`get_blue_from_img.py`를 작성해보자.
 
@@ -257,7 +257,7 @@ python get_blue_from_img.py
 
 다음과 같은 `imshow` 창이 나타나면 `Esc`키를 눌러 창을 닫는다.
 
-<img src="./img/imshow_origin_png.png" style="zoom:40%;" />    <img src="./img/imshow_blue_png.png" style="zoom:40%;" />
+<img src="./img/imshow_origin_png.png" style="zoom:30%;" />    <img src="./img/imshow_blue_png.png" style="zoom:30%;" />
 
 
 
@@ -276,7 +276,7 @@ Mode                 LastWriteTime         Length Name
 -a---l      2025-09-26   오후 2:09           8833 origin.png
 
 
-PS D:\Dropbox\_lectures\Arm\2026NPU AI\py_work>
+PS C:\Users\user\py_work>
 ```
 
 `blue.png`가 추가 된 것을 확인할 수 있다.
@@ -349,7 +349,7 @@ cv2.imwrite('blue.png', res)
 
 `python mark_blue_to_img.py`를 실행한다.
 
-<img src="./img/imshow_mark_blue2img.png" style="zoom:50%;" />
+<img src="./img/imshow_mark_blue2img.png" style="zoom:30%;" />
 
 
 
@@ -388,7 +388,7 @@ cv2.destroyAllWindows()
 
 `python webcam.py`를 실행한다.
 
-<img src="./img/imshow_webcam.png" style="zoom:50%;" />
+<img src="./img/imshow_webcam.png" style="zoom:30%;" />
 
 
 
@@ -481,7 +481,7 @@ cv2.destroyAllWindows()
 
 `python mark_blue.py`를 실행한다.
 
-<img src="./img/imshow_mark_blue.png" style="zoom:50%;" />
+<img src="./img/imshow_mark_blue.png" style="zoom:30%;" />
 
 
 
