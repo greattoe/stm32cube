@@ -2,7 +2,7 @@
 
 준비물 USB 카메라와 마이크로 팬틸트
 
-<img src="./img/usb_cam.png" style="zoom:25%;" /><img src="./img/micro_pantilt.png" style="zoom:25%;" />
+![](./img/usb_cam.png)![](./img/micro_pantilt.png)
 
 #### 개발 환경
 
@@ -102,15 +102,15 @@ PS C:\Users\user\py_work>
 
 `w`, `s`, `a`, `d` `i` 키를 누르면 시리얼 통신으로 해당 문자를 전송하는 `control_PT.py`를 작성을 위해 NUCLEO-F103RB 보드가 연결된 포트 번호를 확인한다.
 
- <img src="D:/Dropbox/myGit/STM32Cube/doc/PT_Control/img/excution_window.png" style="zoom:67%;" />
+![](./img/excution_window.png)
 
 ![](D:/Dropbox/myGit/STM32Cube/doc/HC-SR04/img/win_key.png) + `R` 을 입력하여 열린 실행 창에 `devmgmt.msc`  입력 후, [ 확인 ] 버튼을 클릭하여 장치관리자를 연 후,  NUCLEO-F103RB가 연결된 COM 포트 번호를 확인한다.
 
-![](D:/Dropbox/myGit/STM32Cube/doc/PT_Control/img/check_port_num_on_device_manager.png)
+![](./img/check_port_num_on_device_manager.png)
 
 
 
-`control_PT`작성
+`control_PT.py`작성
 
 ```python
 from getchar import Getchar
@@ -190,7 +190,7 @@ PS D:\Users\user\py_work>
 
 OpenCV를 이용한 파란색 추출
 
-<img src="./img/origin.png" style="zoom:25%;" />
+![](./img/origin.png)
 
 위 `origin.png` 이미지 파일에서 파란색을 추출하여 `blue.png` 이미지 파일로 저장하는 파이썬 코드`get_blue_from_img.py`를 작성해보자.
 
@@ -257,7 +257,7 @@ python get_blue_from_img.py
 
 다음과 같은 `imshow` 창이 나타나면 `Esc`키를 눌러 창을 닫는다.
 
-<img src="./img/imshow_origin_png.png" style="zoom:30%;" />    <img src="./img/imshow_blue_png.png" style="zoom:30%;" />
+![](./img/imshow_origin_png.png)    <img src="(./img/imshow_blue_png.png)
 
 
 
@@ -349,7 +349,7 @@ cv2.imwrite('blue.png', res)
 
 `python mark_blue_to_img.py`를 실행한다.
 
-<img src="./img/imshow_mark_blue2img.png" style="zoom:30%;" />
+![](./img/imshow_mark_blue2img.png)
 
 
 
@@ -481,13 +481,159 @@ cv2.destroyAllWindows()
 
 `python mark_blue.py`를 실행한다.
 
-<img src="./img/imshow_mark_blue.png" style="zoom:30%;" />
+![](./img/imshow_mark_blue.png)
 
 
 
+위 `mark_blue.py`에 `control_PT.py`의 기능을 추가하여 `track_blue.py`를 작성해보자.
+
+```python
+
+'''
+    0         pan left(pan++)           300   320         pan right(pan--)            640
+  0 +------------------------------------+-----+-----+----------------------------------+
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |          tilt up(tilt--)         | 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  | 
+225 +------------------------------------+-----+-----+----------------------------------+ 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  |
+240 +------------------------------------+-----+-----+------------------------------------+  |                                    |     |     |                                  | 
+    |                                    |     |     |                                  | 
+255 +------------------------------------+-----+-----+----------------------------------+ 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |          tilt down(tilt++)       | 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  | 
+    |                                    |     |     |                                  |  480 +------------------------------------+-----+-----+----------------------------------+ 
+'''
+import cv2
+import numpy as np
+import serial
+import time
+margin_x = 60
+margin_y = 45
+
+sp  = serial.Serial('COM3', 115200, timeout=0.125)
+
+
+# Open webcam using DirectShow
+cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)  # 2nd camera
+
+if not cap.isOpened():
+    print("Cannot open camera")
+    exit()
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+#cap.set(cv2.CAP_PROP_FRAME_FPS, 10)
+
+def up():
+    sp.write(b'w')
+def down():
+    sp.write(b's')   
+def left():
+    sp.write(b'a')
+def right():
+    sp.write(b'd')
+
+if not cap.isOpened():
+    print("Could not open camera")
+    exit()
+
+while cap.isOpened():
+    time.sleep(0.01)
+    status, frame = cap.read() #  read camera frame
+    
+    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)    # Convert from BGR to HSV
+
+    # define range of blue color in HSV
+    lower_blue = np.array([100,100,120])          # range of blue
+    upper_blue = np.array([150,255,255])
+
+    lower_green = np.array([50, 150, 50])        # range of green
+    upper_green = np.array([80, 255, 255])
+
+    lower_red = np.array([150, 50, 50])        # range of red
+    upper_red = np.array([180, 255, 255])
+
+    # Threshold the HSV image to get only blue colors
+    mask = cv2.inRange(hsv, lower_blue, upper_blue)     # color range of blue
+    mask1 = cv2.inRange(hsv, lower_green, upper_green)  # color range of green
+    mask2 = cv2.inRange(hsv, lower_red, upper_red)      # color range of red
+
+    # Bitwise-AND mask and original image
+    res1 = cv2.bitwise_and(frame, frame, mask=mask)      # apply blue mask
+    res = cv2.bitwise_and(frame, frame, mask=mask1)    # apply green mask
+    res2 = cv2.bitwise_and(frame, frame, mask=mask2)    # apply red mask
+    
+    gray = cv2.cvtColor(res1, cv2.COLOR_BGR2GRAY)    
+    _, bin = cv2.threshold(gray, 30, 255, cv2.THRESH_BINARY)
+        
+    contours, _ = cv2.findContours(bin, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    largest_contour = None
+    largest_area = 0    
+    
+    COLOR = (0, 255, 0)
+    for cnt in contours:                # find largest blue object
+        area = cv2.contourArea(cnt)
+        if area > largest_area:
+            largest_area = area
+            largest_contour = cnt
+            
+     # draw bounding box with green line
+    if largest_contour is not None:
+        #area = cv2.contourArea(cnt)
+        if largest_area > 768:  # draw only larger than 500
+            x, y, width, height = cv2.boundingRect(largest_contour)
+            center_x = x + width//2
+            center_y = y + height//2
+            print("center: ( %s, %s )"%(center_x, center_y))
+            '''---------------------------------------------------'''
+            if center_x <= 320-margin_x:### need pan left ###########
+                left()
+            elif center_x > 320+margin_x: ### need pan right ########
+                right()
+            else:
+                pass
+            '''---------------------------------------------------'''
+            if center_y <= 240-margin_y:### need tilt up ##########
+                up()
+            elif center_y > 240+margin_x: ### need tilt down ##########
+                down()
+            else: ########################### no need move tilt
+                pass
+            cv2.rectangle(frame, (x, y), (x + width, y + height), COLOR, 2)
+            time.sleep(0.05)   
+    cv2.imshow("VideoFrame",frame)       # show original frame
+    #cv2.imshow('Blue', res)           # show applied blue mask
+    #cv2.imshow('Green', res1)          # show appliedgreen mask
+    #cv2.imshow('red', res2)          # show applied red mask
+
+    k = cv2.waitKey(5) & 0xFF
+        
+    if k == 27:
+        break
+   
+        
+cap.release()
+cv2.destroyAllWindows()
+
+```
+
+`python track_blue.py`를 실행한다.
+
+![](./img/imshow_track_blue.png)
 
 
 
+카메라 화면의 파란색 오브젝트를 이리저리 움직여도 팬틸트가 움직여 항상 화면 중앙에 파란색 오브젝트가 위치하는 것을 확인한다.
 
 
 

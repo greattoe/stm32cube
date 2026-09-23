@@ -1,23 +1,66 @@
 
+'''
+    0         pan left(pan++)           300   320         pan right(pan--)               640
+  0 +------------------------------------+-----+-----+------------------------------------+
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |          tilt up(tilt--)           | 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    | 
+225 +------------------------------------+-----+-----+------------------------------------+ 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    |  
+240 +------------------------------------+-----+-----+------------------------------------+ 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    |  
+255 +------------------------------------+-----+-----+------------------------------------+ 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |          tilt down(tilt++)         | 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    | 
+    |                                    |     |     |                                    |  
+480 +------------------------------------+-----+-----+------------------------------------+ 
+'''
 import cv2
 import numpy as np
+import serial
 import time
-margin_x = 40
-margin_y = 30
+margin_x = 60
+margin_y = 45
+
+sp  = serial.Serial('COM3', 115200, timeout=0.125)
 
 
-cam = cv2.VideoCapture(0)       # 2nd camera
-cam.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-cam.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-#cam.set(cv2.CAP_PROP_FRAME_FPS, 10)
+# Open webcam using DirectShow
+cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)  # 2nd camera
 
-if not cam.isOpened():
+if not cap.isOpened():
+    print("Cannot open camera")
+    exit()
+
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
+#cap.set(cv2.CAP_PROP_FRAME_FPS, 10)
+
+def up():
+    sp.write(b'w')
+def down():
+    sp.write(b's')   
+def left():
+    sp.write(b'a')
+def right():
+    sp.write(b'd')
+
+if not cap.isOpened():
     print("Could not open camera")
     exit()
 
-while cam.isOpened():
+while cap.isOpened():
     time.sleep(0.01)
-    status, frame = cam.read() #  read camera frame
+    status, frame = cap.read() #  read camera frame
     
     hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)    # Convert from BGR to HSV
 
@@ -64,6 +107,20 @@ while cam.isOpened():
             center_x = x + width//2
             center_y = y + height//2
             print("center: ( %s, %s )"%(center_x, center_y))
+            '''---------------------------------------------------'''
+            if center_x <= 320-margin_x:### need pan left ###########
+                left()
+            elif center_x > 320+margin_x: ### need pan right ########
+                right()
+            else:
+                pass
+            '''---------------------------------------------------'''
+            if center_y <= 240-margin_y:### need tilt up ##########
+                up()
+            elif center_y > 240+margin_x: ### need tilt down ##########
+                down()
+            else: ########################### no need move tilt
+                pass
             cv2.rectangle(frame, (x, y), (x + width, y + height), COLOR, 2)
             time.sleep(0.05)   
     cv2.imshow("VideoFrame",frame)       # show original frame
@@ -77,5 +134,5 @@ while cam.isOpened():
         break
    
         
-cam.release()
+cap.release()
 cv2.destroyAllWindows()
