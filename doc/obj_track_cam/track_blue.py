@@ -35,7 +35,7 @@ sp  = serial.Serial('COM3', 115200, timeout=0.125)
 
 
 # Open webcam using DirectShow
-cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)  # 2nd camera
+cap = cv2.VideoCapture(1, cv2.CAP_DSHOW)  # 1 means 2nd camera
 
 if not cap.isOpened():
     print("Cannot open camera")
