@@ -607,7 +607,7 @@ while cap.isOpened():
             '''---------------------------------------------------'''
             if center_y <= 240-margin_y:### need tilt up ##########
                 up()
-            elif center_y > 240+margin_x: ### need tilt down ##########
+            elif center_y > 240+margin_y: ### need tilt down ##########
                 down()
             else: ########################### no need move tilt
                 pass
